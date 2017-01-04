@@ -8,6 +8,6 @@ cron_cmd="DOTFILES_PATH=. ./support/update.sh"
 cronjob="0 * * * * $cron_cmd"
 echo "     crontab was:"
 echo "$(crontab -l)"
-( crontab -l 2>/dev/null | grep -v -F "$croncmd" ; echo "$cronjob" ) | crontab -
+( crontab -l 2>/dev/null | grep -v -F "$cron_cmd" ; echo "$cronjob" ) | crontab -
 echo "     crontab changed to:"
 echo "$(crontab -l)"
