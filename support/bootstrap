@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -euo pipefail
+IFS=$'\n\t'
+
+if [ ! -d "./support" ] ; then
+  echo "This script should be run from inside the dotfiles directory" 1>&2
+  exit 1
+fi
+
+. "./support/crontab.sh"
+PRESERVE_CONFLICTED_FILES=1 ruby ./support/export-files.rb

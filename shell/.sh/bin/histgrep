@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# @see https://twitter.com/michaelhoffman/status/639226401015525376
+histgrep () {
+  grep --recursive -S "$@" $HOME/.history
+  history | grep "$@"
+}
