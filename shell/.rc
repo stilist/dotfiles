@@ -1,5 +1,2 @@
-# PostgreSQL
-PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
-
 # Ruby gems
 PATH="$PATH:$(gem environment gempath)"
