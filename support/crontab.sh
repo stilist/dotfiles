@@ -4,7 +4,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 echo "   * Adding auto-update to crontab"
-cron_cmd="DOTFILES_PATH=. ./support/update.sh"
+cron_cmd="DOTFILES_PATH=$(pwd) $(pwd)/support/update.sh"
 cronjob="0 * * * * $cron_cmd"
 echo "     crontab was:"
 echo "$(crontab -l)"
