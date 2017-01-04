@@ -20,6 +20,7 @@ def handle_conflicts(path)
     .reject { |file| file =~ /\.{1,2}$/ }
     .select { |file| File.file?(file) }
     .select { |file| File.exists?("#{ENV["HOME"]}/#{File.basename(file)}") }
+    .map { |file| "#{ENV["HOME"]}/#{File.basename(file)}" }
 
   conflicts.each do |file|
     FileUtils.cp_r(file, "#{file}.backup",
