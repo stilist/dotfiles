@@ -25,6 +25,7 @@ def handle_conflicts(path)
     FileUtils.cp_r(file, "#{file}.backup",
       preserve: true,
       verbose: true)
+  end
 end
 
 paths.each do |path|
