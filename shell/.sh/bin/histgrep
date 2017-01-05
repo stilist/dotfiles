@@ -1,7 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
 
 # @see https://twitter.com/michaelhoffman/status/639226401015525376
-histgrep () {
-  grep --recursive -S "$@" $HOME/.history
-  history | grep "$@"
-}
+grep --recursive -S "$@" "$HOME/.history"
+history | grep "$@"
