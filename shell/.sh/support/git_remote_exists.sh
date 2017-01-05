@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-. "$(dirname "$0")/silence.sh"
-. "$(dirname "$0")/git_in_initialized_repo.sh"
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/silence.sh"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
 
 ###
 # `git_remote_exists`
@@ -12,7 +13,7 @@
 # @return `1` if the remote does not exist
 ###
 git_remote_exists () {
-  silence git_in_initialized_repo || return 1
+  git_in_initialized_repo || return 1
 
   remote=$1
   if [ -z "$remote" ] ; then

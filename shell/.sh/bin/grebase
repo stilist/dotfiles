@@ -3,9 +3,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-. "$(dirname "$0")/../silence.sh"
-. "$(dirname "$0")/../git_in_initialized_repo.sh"
-silence git_in_initialized_repo || return 1
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
+git_in_initialized_repo || exit 1
 
 ###
 # `grebase`
@@ -22,6 +22,7 @@ silence git_in_initialized_repo || return 1
 ###
 
 # `grebase origin master`
+set +u
 if [ -n "$2" ] ; then
   branch=$2
   remote=$1
@@ -30,9 +31,11 @@ else
   branch="$1"
   remote="origin"
 fi
+set -u
 
 # `grebase`
 if [ -z "$branch" ] ; then
+  . "$script_pwd/../support/git_current_branch.sh"
   branch=$(git_current_branch)
 fi
 

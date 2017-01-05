@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-. "$(dirname "$0")/silence.sh"
-
 ###
 # `git_in_repo`
 #
@@ -11,7 +9,7 @@
 # @return `1` if not in a git repository
 ###
 git_in_repo () {
-  if [ "$(silence git rev-parse --is-inside-work-tree)" -eq "0" ] ; then
+  if git rev-parse --is-inside-work-tree ; then
     return 0
   else
     echo "Not in a git repository" 1>&2

@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-. "$(dirname "$0")/silence.sh"
-. "$(dirname "$0")/git_in_repo.sh"
-. "$(dirname "$0")/git_in_initialized_repo.sh"
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_repo.sh"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
 
 ###
 # `git_current_branch`
@@ -14,9 +14,9 @@
 # @return [string] if the user is in a repository
 ###
 git_current_branch () {
-  silence git_in_repo || return 1
+  git_in_repo &>/dev/null || return 1
 
-  if [ "$(silence git_in_initialized_repo)" -ne "0" ] ; then
+  if ! git_in_initialized_repo ; then
     echo "[new repo]"
   else
     git symbolic-ref --quiet --short HEAD 2>/dev/null || \

@@ -3,9 +3,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-. "$(dirname "$0")/../silence.sh"
-. "$(dirname "$0")/../git_in_initialized_repo.sh"
-silence git_in_initialized_repo || return 1
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
+git_in_initialized_repo || exit 1
 
 ###
 # `switch`
@@ -26,14 +26,15 @@ silence git_in_initialized_repo || return 1
 branch="$1"
 if [ -z "$branch" ] ; then
   "Specify a branch name" 1>&2
-  return 1
+  exit 1
 fi
 
 # http://stackoverflow.com/q/5167957/672403
 #
 # Is there a local branch named `$branch`?
-if [ "$(silence git show-ref --verify --quiet "refs/heads/$branch")" -eq "0" ] ; then
+if git show-ref --verify --quiet "refs/heads/$branch" ; then
   git checkout "$branch"
 else
+  . "$script_pwd/../support/git_create_branch_trying_remotes.sh"
   git_create_branch_trying_remotes "$branch"
 fi

@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-. "$(dirname "$0")/silence.sh"
-. "$(dirname "$0")/git_in_repo.sh"
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_repo.sh"
+. "$script_pwd/../support/silence.sh"
 
 ###
 # `git_in_initialized_repo`

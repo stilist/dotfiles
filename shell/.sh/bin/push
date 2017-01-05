@@ -3,9 +3,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-. "$(dirname "$0")/../silence.sh"
-. "$(dirname "$0")/../git_in_initialized_repo.sh"
-silence git_in_initialized_repo || return 1
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
+"$(git_in_initialized_repo)" || exit 1
 
 ###
 # `push`
@@ -22,7 +22,7 @@ silence git_in_initialized_repo || return 1
 
 # `push to origin` (uses current branch)
 if [ "$1" = "to" ] ; then
-  . "$(dirname "$0")/../git_current_branch.sh"
+  . "$script_pwd/../support/git_current_branch.sh"
   branch="$(git_current_branch)"
   remote="$2"
 # `push feature/add-widget to upstream`
