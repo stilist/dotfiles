@@ -3,4 +3,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+###
+# `be`
+#
+# A convenient shorthand for `bundle exec`.
+#
+# @example
+#   be rails server
+###
+
 bundle exec "$@"

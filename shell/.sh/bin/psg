@@ -3,4 +3,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+###
+# `psg`
+#
+# Search the list of running processes.
+#
+# @example
+#   psg ruby
+###
+
 ps auxww | grep "$1" | grep -v grep
