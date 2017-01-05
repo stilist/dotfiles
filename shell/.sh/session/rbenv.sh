@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
-if [ hash rbenv 2> /dev/null ] ; then
+if which rbenv &>/dev/null ; then
+  PATH="$PATH:$HOME/.rbenv/bin:$(rbenv prefix)/bin"
   eval "$(rbenv init -)"
 fi
