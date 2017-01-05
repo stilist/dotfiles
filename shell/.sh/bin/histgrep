@@ -6,7 +6,8 @@ IFS=$'\n\t'
 ###
 # `histgrep`
 #
-# Search the history files created by `session/history.sh`.
+# Search the entire history dataset: the current buffer (`history`) and the
+# files created by `session/history.sh`.
 #
 # @example
 #   histgrep ssh
