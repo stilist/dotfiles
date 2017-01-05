@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+. "$(dirname "$0")/../silence.sh"
+. "$(dirname "$0")/../git_in_initialized_repo.sh"
+silence git_in_initialized_repo || return 1
+
+###
+# `switch`
+#
+# Wrap `git checkout`. `switch` is meant to help with the confusion between
+# `git checkout`, `git checkout -b`, and `git checkout -t`: just `switch`, and
+# the branch will be checked out (if it exists on a remote or locally) or
+# created (if it doesn't exist).
+#
+# @example Check out a new branch
+#   switch feature/add-widget
+# @example Check out a tracking branch on the remote 'upstream'
+#   switch hotfix/javascript-crash
+# @example Check out a tracking branch on the remote 'origin'
+#   switch bug/window-close
+###
+
+branch="$1"
+if [ -z "$branch" ] ; then
+  "Specify a branch name" 1>&2
+  return 1
+fi
+
+# http://stackoverflow.com/q/5167957/672403
+#
+# Is there a local branch named `$branch`?
+if [ "$(silence git show-ref --verify --quiet "refs/heads/$branch")" -eq "0" ] ; then
+  git checkout "$branch"
+else
+  git_create_branch_trying_remotes "$branch"
+fi

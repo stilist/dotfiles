@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+. "$(dirname "$0")/../silence.sh"
+. "$(dirname "$0")/../git_in_initialized_repo.sh"
+silence git_in_initialized_repo || return 1
+
+###
+# `push`
+#
+# Wrap `git push` for convenience. `push` makes it easy to push the current
+# branch to a remote, so it's less likely that a branch will be pushed to the
+# wrong place (for example, pushing `feature/add-widget` to `master`).
+#
+# @example Push the current branch to the 'origin' remote
+#   push to origin
+# @example Push a different branch to the 'upstream' remote
+#   push feature/add-widget to upstream
+###
+
+# `push to origin` (uses current branch)
+if [ "$1" = "to" ] ; then
+  . "$(dirname "$0")/../git_current_branch.sh"
+  branch="$(git_current_branch)"
+  remote="$2"
+# `push feature/add-widget to upstream`
+else
+  branch="$1"
+  remote="$3"
+fi
+
+if [ -n "$remote" ] ; then
+  git push "$remote" "$branch"
+fi

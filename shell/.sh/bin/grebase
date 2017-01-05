@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+. "$(dirname "$0")/../silence.sh"
+. "$(dirname "$0")/../git_in_initialized_repo.sh"
+silence git_in_initialized_repo || return 1
+
+###
+# `grebase`
+#
+# Wrap `git pull --rebase` for convenience. `grebase` makes it easier to rebase
+# the current branch on top of changes on a remote.
+#
+# @example Rebase on top of the 'master' branch on the remote 'upstream'
+#   grebase upstream master
+# @example Rebase on top of the 'feature/add-widget' branch on the remote 'origin'
+#   grebase feature/add-widget
+# @example Rebase on top of the branch on the remote 'origin' that matches the current branch
+#   grebase
+###
+
+# `grebase origin master`
+if [ -n "$2" ] ; then
+  branch=$2
+  remote=$1
+# `grebase master`
+else
+  branch="$1"
+  remote="origin"
+fi
+
+# `grebase`
+if [ -z "$branch" ] ; then
+  branch=$(git_current_branch)
+fi
+
+git pull --rebase "$remote" "$branch"
