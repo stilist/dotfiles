@@ -1,0 +1,36 @@
+[user]
+email = stilist@ratafia.info
+name = Jordan Cole
+signingkey = 34DB25EE9FE987A9
+
+[alias]
+# @see https://gist.github.com/scottnonnenberg/fefa3f65fdb3715d25882f3023b31c29
+glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+prune = fetch --prune
+stash-all = stash save --include-untracked
+undo = reset --soft HEAD^
+
+[commit]
+gpgSign = true
+
+[credential]
+helper = osxkeychain
+
+[filter "lfs"]
+clean = git-lfs clean -- %f
+process = git-lfs filter-process
+required = true
+smudge = git-lfs smudge -- %f
+
+[merge]
+# @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
+conflictstyle = diff3
+# @see https://git-scm.com/docs/git-config#git-config-mergeff
+ff = only
+
+[rerere]
+# @see https://git-scm.com/2010/03/08/rerere.html
+enabled = true
+
+[status]
+showUntrackedFiles = all
