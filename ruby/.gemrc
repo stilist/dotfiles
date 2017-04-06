@@ -3,4 +3,4 @@
 :verbose: true
 :backtrace: false
 :benchmark: false
-gem: --no-document --user-install --minimal-deps
+gem: --no-document --minimal-deps
