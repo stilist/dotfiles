@@ -12,4 +12,8 @@ IFS=$'\n\t'
 #   psg ruby
 ###
 
-ps auxww | grep "$1" | grep -v grep
+echo '  PID CMD'
+# a: show processes from all users
+# o: select output columns
+# x: include non-interactive processes
+ps -ax -o pid,command | grep --ignore-case "$1" | egrep --invert-match "($0|grep $1)"
