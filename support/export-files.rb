@@ -11,9 +11,9 @@ end
 
 preserve_conflicted_files = ENV.fetch('PRESERVE_CONFLICTED_FILES', false)
 
-invalid_paths = %w(.git ./support).freeze
+invalid_paths = %w(.git support).freeze
 paths = Dir["#{DOTFILES_PATH}/*"]
-  .select! { |path| File.directory?(path) && !invalid_paths.include?(path) }
+  .select! { |path| File.directory?(path) && !invalid_paths.include?(File.basename(path)) }
 
 def handle_conflicts(path)
   conflicts = Dir.glob("#{File.expand_path(path)}/*", File::FNM_DOTMATCH)
