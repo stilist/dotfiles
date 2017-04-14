@@ -1,7 +1,7 @@
 [user]
 email = stilist@ratafia.info
 name = Jordan Cole
-signingkey = 34DB25EE9FE987A9
+signingkey = 9C46806D
 
 [alias]
 # @see https://gist.github.com/scottnonnenberg/fefa3f65fdb3715d25882f3023b31c29
@@ -21,6 +21,9 @@ clean = git-lfs clean -- %f
 process = git-lfs filter-process
 required = true
 smudge = git-lfs smudge -- %f
+
+[gpg]
+program = /usr/local/MacGPG2/bin/gpg2
 
 [merge]
 # @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
