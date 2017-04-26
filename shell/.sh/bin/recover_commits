@@ -23,12 +23,12 @@ git_in_initialized_repo || exit 1
 ###
 
 if [ -z "$1" ] ; then
-  'Specify a pattern to search for' 1>&2
+  echo 'Specify a pattern to search for' 1>&2
   exit 1
 fi
 
 no_results () {
-  'No matching commits found' 1>&2
+  echo 'No matching commits found' 1>&2
   exit 1
 }
 
