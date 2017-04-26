@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
+git_in_initialized_repo || exit 1
+
+###
+# `recover_commits`
+#
+# Search the reflog (`man git-reflog`) for commits with commit messages that
+# match a given pattern.
+#
+# @example Find commits that reference Github issue #50 in their commit message.
+#   recover_commits #50
+# @example Find commits referencing tickets in a Jira project.
+#   recover_commits FOO-1\d+
+# @example Cherry-pick commits to current branch.
+#   recover_commits #50 | tail -r | tr '\n' ' ' # prints hashes oldest-to-newest as a one-line string
+#   git cherry-pick commit_ids # (For example, `git cherry-pick a8aef0f 0ea8038`)
+###
+
+if [ -z "$1" ] ; then
+  'Specify a pattern to search for' 1>&2
+  exit 1
+fi
+
+no_results () {
+  'No matching commits found' 1>&2
+  exit 1
+}
+
+# Search for commits matching `$1`.
+matching_commits="$(git reflog | grep 'commit:' | egrep "$1")"
+if [ "$?" -eq '1' ] ; then
+  no_results
+fi
+if [ -z "$matching_commits" ] ; then
+  no_results
+fi
+
+echo
+
+hashes="$(echo "$matching_commits" | cut -d ' ' -f 1)"
+echo "$hashes"
