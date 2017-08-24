@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+###
+# `hkonf`
+#
+# Search a Heroku app's config for a given (case-insensitive) pattern.
+#
+# @example
+#   hkonf laminar token
+#
+# @see https://devcenter.heroku.com/articles/config-vars
+###
+
+app="${1:-}"
+if [ -z "$app" ] ; then
+  echo 'Error: specify Heroku app to search' 1>&2
+  exit 1
+fi
+
+pattern="${2:-}"
+if [ -z "$pattern" ] ; then
+  echo 'Error: specify search pattern' 1>&2
+  exit 1
+fi
+
+heroku config --shell --app "$app" | grep --ignore-case "$pattern"
