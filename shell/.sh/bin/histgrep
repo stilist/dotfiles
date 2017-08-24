@@ -15,5 +15,5 @@ IFS=$'\n\t'
 # @see https://twitter.com/michaelhoffman/status/639226401015525376
 ###
 
-grep --recursive -S "$@" "$HOME/.history"
+grep --recursive --ignore-case -S "$@" "$HOME/.history"
 history | grep "$@"
