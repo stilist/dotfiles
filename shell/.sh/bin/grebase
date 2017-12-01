@@ -35,8 +35,7 @@ set -u
 
 # `grebase`
 if [ -z "$branch" ] ; then
-  . "$script_pwd/../support/git_current_branch.sh"
-  branch=$(git_current_branch)
+  branch=$(git current-ref)
 fi
 
 git pull --rebase "$remote" "$branch"

@@ -22,8 +22,7 @@ git_in_initialized_repo || exit 1
 
 # `push to origin` (uses current branch)
 if [ "$1" = "to" ] ; then
-  . "$script_pwd/../support/git_current_branch.sh"
-  branch="$(git_current_branch)"
+  branch="$(git current-ref)"
   remote="$2"
 # `push feature/add-widget to upstream`
 else

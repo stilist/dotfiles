@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+script_pwd="$(dirname "$0")"
+. "$script_pwd/../support/git_in_repo.sh"
+. "$script_pwd/../support/git_in_initialized_repo.sh"
+
+###
+# `git current-ref`
+#
+# Get the name of the repository `HEAD`. It may be a branch name, a SHA, or a
+# string that indicates the user is not in a useable ref.
+#
+# @return `1` if the user is not in a repository or at a usable ref
+# @return [string] if the user is in a repository with a usable ref
+#
+# @example Compare across branches without typing out the working branch's name
+#   git diff master.."$(git current-ref)"
+# @example Force-push working branch without the risk of mistyping the branch name
+#   git push -f origin "$(git current-ref)"
+###
+git_in_repo &>/dev/null || exit 1
+git_in_initialized_repo || exit 1
+
+git symbolic-ref --quiet --short HEAD 2>/dev/null || \
+  git rev-parse --short HEAD 2>/dev/null || \
+  exit 1
