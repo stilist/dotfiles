@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+###
+# `hkonf-org`
+#
+# Search Heroku apps' config for a given (case-insensitive) pattern. Iterates
+# through every app in an organization.
+#
+# @example
+#   hkonf-all ratafia token
+#
+# @see https://devcenter.heroku.com/articles/config-vars
+###
+
+org="${1:-}"
+if [ -z "$org" ] ; then
+  echo 'Error: specify Heroku organization to search' 1>&2
+  exit 1
+fi
+
+pattern="${2:-}"
+if [ -z "$pattern" ] ; then
+  echo 'Error: specify search pattern' 1>&2
+  exit 1
+fi
+
+# Extract application names -- exclude region names.
+apps="$(heroku apps --all --org "$org" | grep --extended-regexp --only-matching '^(\w|-)+')"
+
+for app in $apps; do
+  set +e
+  matches="$(hkonf "$app" "$pattern")"
+  set -e
+
+  if [ -n "$matches" ] ; then
+    echo "=== $app"
+    echo "$matches"
+  fi
+done
