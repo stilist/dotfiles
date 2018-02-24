@@ -21,7 +21,7 @@ HOSTNAME_SHORT="${HOSTNAME%%.*}"
 # @note `$$` appends the PID, to reduce the chance of name collision.
 # @note ISO 8601 requires `:` for extended time format, but macOS uses the
 #   character as its path separator. `.` is close enough.
-export HISTFILE="$HISTORY_PATH/$(date -u +%Y-%m-%dT%H.%M.%S)_${HOSTNAME_SHORT}_$$"
+export HISTFILE="$HISTORY_PATH/$(date -u +%FT%H.%M.%S)_${HOSTNAME_SHORT}_$$"
 
 # commands entered with leading whitespace are not saved in history
 export HISTCONTROL=ignorespace
