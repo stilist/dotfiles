@@ -11,6 +11,10 @@ else
   fi
 fi
 
+timestamp_format="%FT%T%z"
+HISTTIMEFORMAT="[${timestamp_format}]%_*"
+export HISTTIMEFORMAT
+
 # @see https://twitter.com/michaelhoffman/status/639178277786136576
 HOSTNAME="$(hostname)"
 # Change e.g. `test.local` to `test`.
@@ -21,7 +25,8 @@ HOSTNAME_SHORT="${HOSTNAME%%.*}"
 # @note `$$` appends the PID, to reduce the chance of name collision.
 # @note ISO 8601 requires `:` for extended time format, but macOS uses the
 #   character as its path separator. `.` is close enough.
-export HISTFILE="$HISTORY_PATH/$(date -u +%FT%H.%M.%SZ)_${HOSTNAME_SHORT}_$$"
+timestamp="$(date -u "+${timestamp_format}" | sed s/:/./g)"
+export HISTFILE="$HISTORY_PATH/${timestamp}_${HOSTNAME_SHORT}_$$"
 
 # commands entered with leading whitespace are not saved in history
 export HISTCONTROL=ignorespace
