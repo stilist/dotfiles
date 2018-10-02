@@ -11,7 +11,8 @@ git_in_initialized_repo || exit 1
 # `grebase`
 #
 # Wrap `git pull --rebase` for convenience. `grebase` makes it easier to rebase
-# the current branch on top of changes on a remote.
+# the current branch on top of changes on a remote. If there are merge
+# conflicts, run the command again once you've resolved the conflicts.
 #
 # @example Rebase on top of the 'master' branch on the remote 'upstream'
 #   grebase upstream master
@@ -19,23 +20,43 @@ git_in_initialized_repo || exit 1
 #   grebase feature/add-widget
 # @example Rebase on top of the branch on the remote 'origin' that matches the current branch
 #   grebase
+# @example Continue a rebase after resolving merge conflicts
+#   grebase
 ###
 
-# `grebase origin master`
-set +u
-if [ -n "$2" ] ; then
-  branch=$2
-  remote=$1
-# `grebase master`
+# `grebase` while resolving merge conflicts.
+if [ -d "$(git rev-parse --git-path rebase-apply)" ] ; then
+  # Are there unstaged files?
+  if [ -n "$(git diff --name-only --diff-filter=U)" ] ; then
+    echo 'Error: resolve and stage all conflicted files.' 1>&2
+    exit 1
+  fi
+
+  current_commit="$(git log --pretty=format:'%h' -n 1)"
+  if [ -z "$(git diff --staged --name-only)" ] ; then
+    echo "No conflicts; skipping ${current_commit}."
+    git rebase --skip
+  else
+    echo "Conflicts resolved for ${current_commit}; continuing."
+    git rebase --continue
+  fi
 else
-  branch="$1"
-  remote="origin"
-fi
-set -u
+  # `grebase origin master`
+  set +u
+  if [ -n "$2" ] ; then
+    branch=$2
+    remote=$1
+  # `grebase master`
+  else
+    branch="$1"
+    remote="origin"
+  fi
+  set -u
 
-# `grebase`
-if [ -z "$branch" ] ; then
-  branch=$(git current-ref)
-fi
+  # `grebase`
+  if [ -z "$branch" ] ; then
+    branch=$(git current-ref)
+  fi
 
-git pull --rebase "$remote" "$branch"
+  git pull --rebase "$remote" "$branch"
+fi
