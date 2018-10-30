@@ -8,12 +8,17 @@ IFS=$'\n\t'
 #
 # Search the list of running processes.
 #
-# @example
+# @example Get the PID and command for all running Ruby processes
 #   psg ruby
+# @example Get the PIDs of all running Ruby processes
+#   psg ruby 2>/dev/null | sed "s/^[ \t]*//" | cut -d ' ' -f 1
+#   # or
+#   psg redis 2>/dev/null | grep -E -o "^\s*(\d+)"
 ###
 
-echo '  PID CMD'
+echo '  PID CMD' 1>&2
 # a: show processes from all users
-# o: select output columns
+# o: select output columns; `=` is usually followed by a keyword, but omitting
+#    keywords hides the column title
 # x: include non-interactive processes
-ps -ax -o pid,command | grep --ignore-case "$1" | egrep --invert-match "($0|grep --ignore-case $1)"
+ps -ax -o pid=,command= | grep --ignore-case "$1" | egrep --invert-match "($0|grep --ignore-case $1)"
