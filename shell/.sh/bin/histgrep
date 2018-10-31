@@ -8,9 +8,10 @@ IFS=$'\n\t'
 #
 # Search the history files created by `session/history.sh`.
 #
-# @example
+# @example Find all history matching 'ssh'
 #   histgrep ssh
-#
+# @example Display the most recent command in history matching 'ssh'
+#   histgrep ssh | grep -v histgrep | tail -1 | cut -d ' ' -f 2-
 # @see https://twitter.com/michaelhoffman/status/639226401015525376
 # @see https://stackoverflow.com/a/981831/672403
 ###
