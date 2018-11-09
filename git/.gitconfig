@@ -1,8 +1,3 @@
-[user]
-email = stilist@ratafia.info
-name = Jordan Cole
-signingkey = 9C46806D
-
 [alias]
 # @see https://gist.github.com/scottnonnenberg/fefa3f65fdb3715d25882f3023b31c29
 glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
