@@ -130,10 +130,12 @@ convert_modules () {
   OUTPUT_FILE="${TMP_PATH}/${OUTPUT_NAME}.${OUTPUT_FORMAT}"
 
   # `-i`: input file
+  # `-b:a`: output bitrate -- was getting 64k without this
   # `-hide_banner`: suppress `ffmpeg`'s
   # `-loglevel`: logging below this level will be hidden
   echo "    Writing final ${OUTPUT_FORMAT} transcode" 1>&2
   ffmpeg -i "${INTERMEDIATE_FILE}" \
+         -b:a 192k \
          -hide_banner \
          -loglevel fatal \
          "${OUTPUT_FILE}"
