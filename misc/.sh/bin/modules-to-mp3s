@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+
+###
+# `modules-to-mp3s`
+#
+# Convert module files (.IT, .MOD, .S3M, .ZIP) into mp3s. Searches in the input
+# directory (defaults to the current directory) and produces mp3s in the output
+# directory (defaults to the input directory).
+#
+# @example Convert files in the current directory
+#   modules-to-mp3s
+# @example Convert files in a different directory
+#   modules-to-mp3s ~/scene.org/music/4-mat
+# @example Convert files from a different directory; write to current directory
+#   modules-to-mp3s ~/scene.org/music/4-mat .
+#
+# @see https://en.wikipedia.org/wiki/Module_file
+###
+
+set -euo pipefail
+
+IFS=$' '
+REQUIREMENTS="ffmpeg xmp"
+for requirement in $REQUIREMENTS ; do
+  # @see https://stackoverflow.com/a/677212/672403
+  command -v "${requirement}" >/dev/null 2>&1 || {
+    echo "This script requires $requirement." 1>&2
+    echo "You can install it from Homebrew: brew install $requirement" 1>&2
+    exit 1
+  }
+done
+
+# @see https://github.com/koalaman/shellcheck/wiki/SC2039#c-style-escapes
+IFS=$'\n\t'
+
+ensure_directory () {
+  path="${1}"
+  path_type="${2}"
+
+  if [ ! -e "${path}" ] ; then
+    mkdir -p "${path}" || {
+      echo "! Unable to create the ${path_type} directory (${path})." 1>&2
+      exit 1
+    }
+  fi
+
+  if [ -f "${path}" ] ; then
+    echo "! The given ${path_type} path (${path}) is a file, not a directory." 1>&2
+    exit 1
+  fi
+}
+
+absolute_path () {
+  path="${1}"
+  path_type="${2}"
+
+  ensure_directory "${path}" "${path_type}"
+
+  # @see https://unix.stackexchange.com/a/24342
+  (cd -- "${path}" && pwd -P 2>/dev/null) || pwd
+}
+
+# @note These need to be exported so they're visible in the exported functions.
+INPUT_PATH="$(absolute_path "${1:-$PWD}" input)"
+export INPUT_PATH
+OUTPUT_PATH="$(absolute_path "${2:-$INPUT_PATH}" output)"
+export OUTPUT_PATH
+TMP_PATH="${OUTPUT_PATH}/tmp"
+export TMP_PATH
+OUTPUT_FORMAT="mp3"
+export OUTPUT_FORMAT
+
+get_module_name () {
+  # * `xmp --load-only`: print information about the given module to `stderr`.
+  #   (Redirected to `stdout` for `grep`.) The output looks like:
+  #
+  #       Extended Module Player 4.1.0
+  #       Copyright (C) 1996-2016 Claudio Matsuoka and Hipolito Carraro Jr
+  #       Using null output
+  #       Mixer set to 44100 Hz, 16bit, cubic spline interpolated stereo
+  #       Press 'h' for help
+  #
+  #       Loading ./4-mats_madness.zip (1 of 1)
+  #       Module name  : 4-Mat's.Madness
+  #       Module type  : Noisetracker M.K.
+  #       Module length: 46 patterns
+  #       Patterns     : 30
+  #       Instruments  : 31
+  #       Samples      : 31
+  #       Channels     : 4 [ 4 b b 4 ]
+  #       Duration     : 6min47s
+  #
+  # * `grep`: find the `Module name` line.
+  # * `awk`: use `: ` as the 'field separator' to get the actual module name.
+  xmp --load-only "${1}" 2>&1 \
+    | grep --extended-regexp --only-matching "Module name\s+:.+" \
+    | awk -F ": " '{ print $2 }'
+}
+export -f get_module_name
+
+# @see https://stackoverflow.com/a/40493918/672403 (calling function in `-exec`)
+convert_modules () {
+  # Get the file's path relative to `$INPUT_PATH` -- can't use `basename`
+  # because it strips *all* directories.
+  #
+  # @note `\/` removes the `/` between `$INPUT_PATH` and the relative file
+  #   path. Using `/` rather than `\/` is equivalent to ``.
+  # @see https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+  RELATIVE_PATH="${1/${INPUT_PATH}\/}"
+  echo "  * Converting ${RELATIVE_PATH}" 1>&2
+
+  OUTPUT_NAME="$(get_module_name "${1}")"
+
+  INTERMEDIATE_FORMAT="wav"
+  INTERMEDIATE_FILE="${TMP_PATH}/${OUTPUT_NAME}.${INTERMEDIATE_FORMAT}"
+
+  # @note `xmp` has a `-c` / `--stdout` option that writes directly to
+  #   `stdout`, but for some reason the output doesn't have the 44-byte WAV
+  #   header. This means the decoded input has to be written to a temporary
+  #   file instead of being piped directly to `ffmpeg`'s `stdin`.
+  echo "    Writing intermediate ${INTERMEDIATE_FORMAT} transcode" 1>&2
+  xmp --driver "${INTERMEDIATE_FORMAT}" \
+    --output-file "${INTERMEDIATE_FILE}" \
+    --quiet \
+    "${1}"
+
+  # @note The final file is written to `tmp/` so it's automatically cleaned up
+  #   if the script is killed before completing. The file will be moved into
+  #   the output directory once `find` has finished.
+  OUTPUT_FILE="${TMP_PATH}/${OUTPUT_NAME}.${OUTPUT_FORMAT}"
+
+  # `-i`: input file
+  # `-hide_banner`: suppress `ffmpeg`'s
+  # `-loglevel`: logging below this level will be hidden
+  echo "    Writing final ${OUTPUT_FORMAT} transcode" 1>&2
+  ffmpeg -i "${INTERMEDIATE_FILE}" \
+         -hide_banner \
+         -loglevel fatal \
+         "${OUTPUT_FILE}"
+
+  # +wav+ files are large (no compression) so clean it up once it's no longer
+  # needed.
+  echo "    Removing intermediate ${INTERMEDIATE_FORMAT} transcode" 1>&2
+  rm "${INTERMEDIATE_FILE}"
+}
+export -f convert_modules
+
+# @see http://redsymbol.net/articles/bash-exit-traps/
+remove_tmp () {
+  echo "* Cleaning up temporary files" 1>&2
+  rm -rf "${TMP_PATH}"
+}
+trap remove_tmp EXIT
+
+# Temporary storage for `convert_modules`
+mkdir -p "${TMP_PATH}"
+
+echo "* Looking for modules in ${INPUT_PATH}" 1>&2
+echo "  Transcoded ${OUTPUT_FORMAT}s will be written to ${OUTPUT_PATH}" 1>&2
+# @see https://stackoverflow.com/a/40493918/672403 (`convert_modules`)
+# @see https://github.com/koalaman/shellcheck/wiki/SC2146 (`\(` / `\)`)
+find "${INPUT_PATH}" \
+  -type f \
+  \( \
+    -name "*.it" \
+    -o -name "*.mod" \
+    -o -name "*.s3m" \
+    -o -name "*.zip" \
+  \) \
+  -exec bash -c 'convert_modules "$1"' _ {} \;
+
+echo "* Moving transcoded ${OUTPUT_FORMAT}s to ${OUTPUT_PATH}" 1>&2
+mv "${TMP_PATH}"/*."${OUTPUT_FORMAT}" "${OUTPUT_PATH}"
