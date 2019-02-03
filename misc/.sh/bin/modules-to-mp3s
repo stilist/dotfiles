@@ -92,9 +92,17 @@ get_module_name () {
   #
   # * `grep`: find the `Module name` line.
   # * `awk`: use `: ` as the 'field separator' to get the actual module name.
-  xmp --load-only "${1}" 2>&1 \
+  module_name="$(
+    xmp --load-only "${1}" 2>&1 \
     | grep --extended-regexp --only-matching "Module name\s+:.+" \
     | awk -F ": " '{ print $2 }'
+  )"
+  if [ -n "${module_name}" ] ; then
+    echo "${module_name}"
+  else
+    file_name="$(basename "${1}")"
+    echo "${file_name%.*}"
+  fi
 }
 export -f get_module_name
 
