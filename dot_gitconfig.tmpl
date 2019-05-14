@@ -20,33 +20,33 @@
   untracked = cyan
 
 [commit]
-gpgSign = true
+  gpgSign = true
 
 [credential]
-{{- if eq .chezmoi.os "darwin" }}
-helper = osxkeychain
-{{- end }}
+  {{- if eq .chezmoi.os "darwin" }}
+  helper = osxkeychain
+  {{- end }}
 
 [filter "lfs"]
-clean = git-lfs clean -- %f
-process = git-lfs filter-process
-required = true
-smudge = git-lfs smudge -- %f
+  clean = git-lfs clean -- %f
+  process = git-lfs filter-process
+  required = true
+  smudge = git-lfs smudge -- %f
 
 [gpg]
-{{- if eq .chezmoi.os "darwin" }}
-program = /usr/local/MacGPG2/bin/gpg2
-{{- end }}
+  {{- if eq .chezmoi.os "darwin" }}
+  program = /usr/local/MacGPG2/bin/gpg2
+  {{- end }}
 
 [merge]
-# @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
-conflictstyle = diff3
-# @see https://git-scm.com/docs/git-config#git-config-mergeff
-ff = only
+  # @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
+  conflictstyle = diff3
+  # @see https://git-scm.com/docs/git-config#git-config-mergeff
+  ff = only
 
 [rerere]
-# @see https://git-scm.com/2010/03/08/rerere.html
-enabled = true
+  # @see https://git-scm.com/2010/03/08/rerere.html
+  enabled = true
 
 [status]
-showUntrackedFiles = all
+  showUntrackedFiles = all
