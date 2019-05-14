@@ -1,9 +1,7 @@
-[alias]
-# @see https://gist.github.com/scottnonnenberg/fefa3f65fdb3715d25882f3023b31c29
-glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-prune = fetch --prune
-stash-all = stash save --include-untracked
-undo = reset --soft HEAD^
+[user]
+  email = "{{ .git.email }}"
+  name = "{{ .name }}"
+  signingkey = "{{ .git.signingkey }}"
 
 [color]
   ui = auto
@@ -25,7 +23,9 @@ undo = reset --soft HEAD^
 gpgSign = true
 
 [credential]
+{{- if eq .chezmoi.os "darwin" }}
 helper = osxkeychain
+{{- end }}
 
 [filter "lfs"]
 clean = git-lfs clean -- %f
@@ -34,7 +34,9 @@ required = true
 smudge = git-lfs smudge -- %f
 
 [gpg]
+{{- if eq .chezmoi.os "darwin" }}
 program = /usr/local/MacGPG2/bin/gpg2
+{{- end }}
 
 [merge]
 # @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
