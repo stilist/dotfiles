@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add Yarn’s paths to `$PATH`
+- Set `$GOPATH` and add it to `$PATH`
 
 ### Fixed
 - Rename `.sh/` directory and files to match chezmoi’s conventions
