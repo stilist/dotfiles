@@ -17,7 +17,7 @@ IFS=$'\n\t'
 ###
 
 export GREP_COLOR='1;33' # yellow
-export GREP_OPTIONS="--color=always --ignore-case --regexp=$*"
+export GREP_OPTIONS="--color=always --ignore-case --regexp=$@"
 
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HISTORY_PATH="${DATA_HOME}/history-data/automated imports/shell"
