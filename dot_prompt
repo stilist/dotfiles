@@ -132,7 +132,7 @@ TIMESTAMP_PLACEHOLDER="--:--"
 USERNAME="\u"
 
 ansi_escape() {
-  echo "${PRINTING_OFF}" "${1}" "${PRINTING_ON}"
+  echo "${PRINTING_OFF}${1}${PRINTING_ON}"
 }
 
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
