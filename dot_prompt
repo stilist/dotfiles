@@ -71,7 +71,7 @@ if tput setaf 1 &> /dev/null; then
   yellow=$(tput setaf 136);
 else
   bold='';
-  reset="\e[0m";
+  reset="\e[00m";
   black="\e[1;30m";
   blue="\e[1;34m";
   cyan="\e[1;36m";
