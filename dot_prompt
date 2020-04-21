@@ -142,7 +142,7 @@ PS0=$(IFS=; echo "${PS0_ELEMENTS[*]}")
 export PS0
 
 git_branch_prefix=(
-  "$(ansi_escape "${white}")" " on " "$(ansi_escape "${violet}")"
+  "$(ansi_escape "${white}")" "on" "$(ansi_escape "${violet}")"
 )
 git_status_prefix=(
   "$(ansi_escape "${blue}")"
