@@ -54,22 +54,6 @@ prompt_git() {
   echo -e "${1}${branchName}${2}${s}";
 }
 
-# @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
-move_cursor_to_start_of_ps1() {
-  command_rows=$(history 1 | wc -l)
-  if [ "$command_rows" -gt 1 ]; then
-    let vertical_movement=$command_rows+1
-  else
-    command=$(history 1 | sed 's/^\s*[0-9]*\s*//')
-    command_length=${#command}
-    ps1_prompt_length=${#PS1_PROMPT}
-    let total_length=$command_length+$ps1_prompt_length
-    let lines=$total_length/${COLUMNS}+1
-    let vertical_movement=$lines+1
-  fi
-  tput cuu $vertical_movement
-}
-
 # @see https://github.com/mathiasbynens/dotfiles/blob/13e29f408fc360360b4468aef2c318dff287c7d2/.bash_prompt#L60-L88
 if tput setaf 1 &> /dev/null; then
   tput sgr0; # reset colors
@@ -136,6 +120,20 @@ ansi_escape() {
 }
 
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
+move_cursor_to_start_of_ps1() {
+  command_rows=$(history 1 | wc -l)
+  if [ "$command_rows" -gt 1 ]; then
+    let vertical_movement=$command_rows+1
+  else
+    command=$(history 1 | sed 's/^\s*[0-9]*\s*//')
+    command_length=${#command}
+    ps1_prompt_length=${#PS1_PROMPT}
+    let total_length=$command_length+$ps1_prompt_length
+    let lines=$total_length/${COLUMNS}+1
+    let vertical_movement=$lines+1
+  fi
+  tput cuu $vertical_movement
+}
 PS0_ELEMENTS=(
   "$SAVE_CURSOR_POSITION" "\$(move_cursor_to_start_of_ps1)"
   "$PROMPT_COLOUR" "$TIMESTAMP" "${reset}" "$RESTORE_CURSOR_POSITION"
