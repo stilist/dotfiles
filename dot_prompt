@@ -119,29 +119,45 @@ ansi_escape() {
   echo "${PRINTING_OFF}${1}${PRINTING_ON}"
 }
 
+# This is shared between PS0 and PS1 -- PS0 needs it to correctly reproduce
+# PS1's user-input line.
+COMMAND_PROMPT_ELEMENTS=(
+  "${NEWLINE}"
+  "$(ansi_escape "${white}")" "${PS1_PROMPT} "
+  "$(ansi_escape "${reset}")"
+)
+
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
 #
 # @note PS0 was added in Bash 4.4 (http://stromberg.dnsalias.org/~strombrg/PS0-prompt/).
-#   macOS ships with Bash 3.x because of the GPL (https://www.reddit.com/r/bash/comments/393oqv/why_is_the_version_of_bash_included_in_os_x_so_old/)
+#   macOS ships with Bash 3.x because newer versions are under GPL v3
+#   (https://www.reddit.com/r/bash/comments/393oqv/why_is_the_version_of_bash_included_in_os_x_so_old/)
 #   To make PS0 work, you'll need to install a more recent version of Bash
 #   (https://www.cyberciti.biz/faq/change-default-shell-to-bash-on-macos-catalina/).
 move_cursor_to_start_of_ps1() {
   command_rows=$(history 1 | wc -l)
   if [ "$command_rows" -gt 1 ]; then
-    let vertical_movement=$command_rows+1
+    let lines=$command_rows
   else
-    command=$(history 1 | sed 's/^\s*[0-9]*\s*//')
+    command=$(history 1 | sed -E 's:^.+\*::')
     command_length=${#command}
     ps1_prompt_length=${#PS1_PROMPT}
     let total_length=$command_length+$ps1_prompt_length
     let lines=$total_length/${COLUMNS}+1
-    let vertical_movement=$lines+1
   fi
+  # @todo Use # of lines in PS1 - 1.
+  let vertical_movement=$lines+2
   tput cuu $vertical_movement
 }
 PS0_ELEMENTS=(
-  "$SAVE_CURSOR_POSITION" "\$(move_cursor_to_start_of_ps1)"
-  "$PROMPT_COLOUR" "$TIMESTAMP" "${reset}" "$RESTORE_CURSOR_POSITION"
+  "${SAVE_CURSOR_POSITION}"
+  "\$(move_cursor_to_start_of_ps1)"
+  "${PROMPT_COLOUR}" "${TIMESTAMP}" "${reset}"
+  "${RESTORE_CURSOR_POSITION}"
+  "${NEWLINE}"
+  $(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")
+  # Push output to the line below the end of PS1 & the user input.
+  "${NEWLINE}"
 )
 PS0=$(IFS=; echo "${PS0_ELEMENTS[*]}")
 export PS0
@@ -169,10 +185,7 @@ PS1_ELEMENTS=(
   "$(ansi_escape "${green}")" " ${DIRECTORY}"
   # git branch and status
   "\$(prompt_git \"${git_branch_prefix[*]}\" \"${git_status_prefix[*]}\")"
-  # user-input line
-  "${NEWLINE}"
-  "$(ansi_escape "${white}")" "${PS1_PROMPT} "
-  "$(ansi_escape "${reset}")"
+  $(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")
 )
 PS1=$(IFS=; echo "${PS1_ELEMENTS[*]}")
 export PS1
