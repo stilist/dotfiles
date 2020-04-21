@@ -99,17 +99,28 @@ else
   hostColor="${yellow}";
 fi;
 
+# @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
+DIRECTORY="\w"
+HOSTNAME="\h"
+NEWLINE="\n"
+PRINTING_OFF="\["
+PRINTING_ON="\]"
+USERNAME="\u"
+ansi_escape() {
+  echo "${PRINTING_OFF}" "${1}" "${PRINTING_ON}"
+}
+
 # Set the terminal title and prompt.
-PS1="\[\033]0;\W\007\]"; # working directory base name
-PS1+="\[${bold}\]\n"; # newline
-PS1+="\[${userColor}\]\u"; # username
-PS1+="\[${white}\] at ";
-PS1+="\[${hostColor}\]\h"; # host
-PS1+="\[${white}\] in ";
-PS1+="\[${green}\]\w"; # working directory full path
+PS1="$(ansi_escape "\033]0;\W\007")"; # working directory base name
+PS1+="$(ansi_escape "${bold}")${NEWLINE}"; # newline
+PS1+="$(ansi_escape "${userColor}")${USERNAME}"; # username
+PS1+="$(ansi_escape "${white}") at ";
+PS1+="$(ansi_escape "${hostColor}")${HOSTNAME}"; # host
+PS1+="$(ansi_escape "${white}") in ";
+PS1+="$(ansi_escape "${green}") ${DIRECTORY}"; # working directory full path
 PS1+="\$(prompt_git \"\[${white}\] on \[${violet}\]\" \"\[${blue}\]\")"; # Git repository details
-PS1+="\n";
-PS1+="\[${white}\]\$ \[${reset}\]"; # `$` (and reset color)
+PS1+="${NEWLINE}";
+PS1+="$(ansi_escape "${white}")\$ $(ansi_escape "${reset}")"; # `$` (and reset color)
 export PS1;
 
 PS2="\[${yellow}\]→ \[${reset}\]";
