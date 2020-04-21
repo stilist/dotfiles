@@ -174,7 +174,7 @@ PS0_ELEMENTS=(
   "${PROMPT_COLOUR}" "${TIMESTAMP}" "${reset}"
   "${RESTORE_CURSOR_POSITION}"
   "${NEWLINE}"
-  $(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")
+  "$(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")"
   # Push output to the line below the end of PS1 & the user input.
   "${NEWLINE}"
 )
@@ -204,7 +204,7 @@ PS1_ELEMENTS=(
   "$(ansi_escape "${green}")" " ${DIRECTORY}"
   # git branch and status
   "\$(prompt_git \"${git_branch_prefix[*]}\" \"${git_status_prefix[*]}\")"
-  $(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")
+  "$(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")"
 )
 PS1=$(IFS=; echo "${PS1_ELEMENTS[*]}")
 export PS1
