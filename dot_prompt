@@ -54,6 +54,23 @@ prompt_git() {
   echo -e "${1}${branchName}${2}${s}";
 }
 
+# @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
+move_cursor_to_start_of_ps1() {
+  command_rows=$(history 1 | wc -l)
+  if [ "$command_rows" -gt 1 ]; then
+    let vertical_movement=$command_rows+1
+  else
+    command=$(history 1 | sed 's/^\s*[0-9]*\s*//')
+    command_length=${#command}
+    ps1_prompt_length=${#PS1_PROMPT}
+    let total_length=$command_length+$ps1_prompt_length
+    let lines=$total_length/${COLUMNS}+1
+    let vertical_movement=$lines+1
+  fi
+  tput cuu $vertical_movement
+}
+
+# @see https://github.com/mathiasbynens/dotfiles/blob/13e29f408fc360360b4468aef2c318dff287c7d2/.bash_prompt#L60-L88
 if tput setaf 1 &> /dev/null; then
   tput sgr0; # reset colors
   bold=$(tput bold);
@@ -105,12 +122,26 @@ HOSTNAME="\h"
 NEWLINE="\n"
 PRINTING_OFF="\["
 PRINTING_ON="\]"
+PROMPT_COLOUR="${yellow}"
 PS1_PROMPT="\$"
 PS2_PROMPT="→"
+RESTORE_CURSOR_POSITION="\e[u"
+SAVE_CURSOR_POSITION="\e[s"
+TIMESTAMP="\A"
+TIMESTAMP_PLACEHOLDER="--:--"
 USERNAME="\u"
+
 ansi_escape() {
   echo "${PRINTING_OFF}" "${1}" "${PRINTING_ON}"
 }
+
+# @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
+PS0_ELEMENTS=(
+  "$SAVE_CURSOR_POSITION" "\$(move_cursor_to_start_of_ps1)"
+  "$PROMPT_COLOUR" "$TIMESTAMP" "${reset}" "$RESTORE_CURSOR_POSITION"
+)
+PS0=$(IFS=; echo "${PS0_ELEMENTS[*]}")
+export PS0
 
 git_branch_prefix=(
   "$(ansi_escape "${white}")" " on " "$(ansi_escape "${violet}")"
@@ -123,12 +154,15 @@ PS1_ELEMENTS=(
   "$(ansi_escape "\033]0;\W\007")"
   # visually separate prompt from output of previous command
   "${NEWLINE}"
+  # timestamp placeholder on its own line
+  "$(ansi_escape "${PROMPT_COLOUR}")" "${TIMESTAMP_PLACEHOLDER}"
+  "$(ansi_escape "${reset}")"
+  "${NEWLINE}"
   "$(ansi_escape "${userColor}")" "${USERNAME}"
   "$(ansi_escape "${white}")" " at"
   # hostname
   "$(ansi_escape "${hostColor}")" " ${HOSTNAME}"
   "$(ansi_escape "${white}")" " in"
-  # full path to current directory
   "$(ansi_escape "${green}")" " ${DIRECTORY}"
   # git branch and status
   "\$(prompt_git \"${git_branch_prefix[*]}\" \"${git_status_prefix[*]}\")"
@@ -141,8 +175,14 @@ PS1=$(IFS=; echo "${PS1_ELEMENTS[*]}")
 export PS1
 
 PS2_ELEMENTS=(
-  "$(ansi_escape "${yellow}")" "${PS2_PROMPT} "
+  "$(ansi_escape "${PROMPT_COLOUR}")" "${PS2_PROMPT} "
   "$(ansi_escape "${reset}")"
 )
 PS2=$(IFS=; echo "${PS2_ELEMENTS[*]}")
 export PS2
+
+# > [T]his covers a corner case by showing the result of a history substitution
+# > command in a subsequent prompt for verification rather than executing it
+# > immediately. Without it, history substitution commands like !! and !274
+# > cause the time to be written one line too low when the command is run.
+shopt -s histverify
