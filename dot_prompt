@@ -105,23 +105,39 @@ HOSTNAME="\h"
 NEWLINE="\n"
 PRINTING_OFF="\["
 PRINTING_ON="\]"
+PS1_PROMPT="\$"
 USERNAME="\u"
 ansi_escape() {
   echo "${PRINTING_OFF}" "${1}" "${PRINTING_ON}"
 }
 
-# Set the terminal title and prompt.
-PS1="$(ansi_escape "\033]0;\W\007")"; # working directory base name
-PS1+="$(ansi_escape "${bold}")${NEWLINE}"; # newline
-PS1+="$(ansi_escape "${userColor}")${USERNAME}"; # username
-PS1+="$(ansi_escape "${white}") at ";
-PS1+="$(ansi_escape "${hostColor}")${HOSTNAME}"; # host
-PS1+="$(ansi_escape "${white}") in ";
-PS1+="$(ansi_escape "${green}") ${DIRECTORY}"; # working directory full path
-PS1+="\$(prompt_git \"\[${white}\] on \[${violet}\]\" \"\[${blue}\]\")"; # Git repository details
-PS1+="${NEWLINE}";
-PS1+="$(ansi_escape "${white}")\$ $(ansi_escape "${reset}")"; # `$` (and reset color)
-export PS1;
+git_branch_prefix=(
+  "$(ansi_escape "${white}")" " on " "$(ansi_escape "${violet}")"
+)
+git_status_prefix=(
+  "$(ansi_escape "${blue}")"
+)
+PS1_ELEMENTS=(
+  # set current directory's `dirname` (`\W`) as terminal title
+  "$(ansi_escape "\033]0;\W\007")"
+  # visually separate prompt from output of previous command
+  "${NEWLINE}"
+  "$(ansi_escape "${userColor}")" "${USERNAME}"
+  "$(ansi_escape "${white}")" " at"
+  # hostname
+  "$(ansi_escape "${hostColor}")" " ${HOSTNAME}"
+  "$(ansi_escape "${white}")" " in"
+  # full path to current directory
+  "$(ansi_escape "${green}")" " ${DIRECTORY}"
+  # git branch and status
+  "\$(prompt_git \"${git_branch_prefix[*]}\" \"${git_status_prefix[*]}\")"
+  # user-input line
+  "${NEWLINE}"
+  "$(ansi_escape "${white}")" "${PS1_PROMPT} "
+  "$(ansi_escape "${reset}")"
+)
+PS1=$(IFS=; echo "${PS1_ELEMENTS[*]}")
+export PS1
 
 PS2="\[${yellow}\]→ \[${reset}\]";
 export PS2;
