@@ -146,8 +146,26 @@ move_cursor_to_start_of_ps1() {
     (( total_length = command_length + ps1_prompt_length ))
     (( lines = total_length / COLUMNS + 1 ))
   fi
-  # @todo Use # of lines in PS1 - 1.
-  (( vertical_movement = lines + 2 ))
+  # The timestamp placeholder may not be on the first line of PS1, and PS1
+  # may be more than 1-2 lines. This uses sed to strips out everything before
+  # the placeholder, then gets the number of lines with wc. Note that if
+  # $TIMESTAMP_PLACEHOLDER contains '/' this sed command will fail -- in that
+  # case the '/'s in the command will need to be replaced with a different
+  #  delimiter. (I often use ':', e.g. "sed 's:xx:yy:'", but
+  # $TIMESTAMP_PLACEHOLDER contains ':'.)
+  # * The timestamp placeholder may not be on the first line of `$PS1`, and
+  #   `$PS1` may be more than 1-2 lines. This uses `sed` to strip out
+  #   everything before the placeholder to ensure the line count is correct.
+  #   Note that if `$TIMESTAMP_PLACEHOLDER` contains `/` this `sed` command
+  #   will fail -- in that case the `/`s in the command will need to be
+  #   replaced with a different delimiter. (I often use `:`, e.g.
+  #   `"sed 's:xx:yy:'"`, but `$TIMESTAMP_PLACEHOLDER` contains `:`.)
+  # * `grep`'s `--fixed-strings` searches for "\n" sequences, rather than
+  #   literal newlines.
+  # * `grep`'s `--only-matching` prints just the "\n" sequences, so it's easier
+  #   to be sure `wc -l` is counting correctly.
+  ps1_lines="$(echo "${PS1}" | sed -E "s/.+${TIMESTAMP_PLACEHOLDER}//" | grep --fixed-strings "\n" --only-matching | wc -l)"
+  (( vertical_movement = lines + ps1_lines ))
   tput cuu "$vertical_movement"
 }
 PS0_ELEMENTS=(
