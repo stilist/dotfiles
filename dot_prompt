@@ -135,19 +135,20 @@ COMMAND_PROMPT_ELEMENTS=(
 #   To make PS0 work, you'll need to install a more recent version of Bash
 #   (https://www.cyberciti.biz/faq/change-default-shell-to-bash-on-macos-catalina/).
 move_cursor_to_start_of_ps1() {
-  command_rows=$(history 1 | wc -l)
-  if [ "$command_rows" -gt 1 ]; then
-    let lines=$command_rows
+  local lines
+  command_rows="$(history 1 | wc -l)"
+  if [ "${command_rows}" -gt 1 ]; then
+    lines="${command_rows}"
   else
-    command=$(history 1 | sed -E 's:^.+\*::')
-    command_length=${#command}
-    ps1_prompt_length=${#PS1_PROMPT}
-    let total_length=$command_length+$ps1_prompt_length
-    let lines=$total_length/${COLUMNS}+1
+    command="$(history 1 | sed -E 's:^.+\*::')"
+    command_length="${#command}"
+    ps1_prompt_length="${#PS1_PROMPT}"
+    (( total_length = command_length + ps1_prompt_length ))
+    (( lines = total_length / COLUMNS + 1 ))
   fi
   # @todo Use # of lines in PS1 - 1.
-  let vertical_movement=$lines+2
-  tput cuu $vertical_movement
+  (( vertical_movement = lines + 2 ))
+  tput cuu "$vertical_movement"
 }
 PS0_ELEMENTS=(
   "${SAVE_CURSOR_POSITION}"
