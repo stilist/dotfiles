@@ -128,12 +128,6 @@ COMMAND_PROMPT_ELEMENTS=(
 )
 
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
-#
-# @note PS0 was added in Bash 4.4 (http://stromberg.dnsalias.org/~strombrg/PS0-prompt/).
-#   macOS ships with Bash 3.x because newer versions are under GPL v3
-#   (https://www.reddit.com/r/bash/comments/393oqv/why_is_the_version_of_bash_included_in_os_x_so_old/)
-#   To make PS0 work, you'll need to install a more recent version of Bash
-#   (https://www.cyberciti.biz/faq/change-default-shell-to-bash-on-macos-catalina/).
 move_cursor_to_start_of_ps1() {
   local lines
   command_rows="$(history 1 | wc -l)"
@@ -168,6 +162,11 @@ move_cursor_to_start_of_ps1() {
   (( vertical_movement = lines + ps1_lines ))
   tput cuu "$vertical_movement"
 }
+# @note PS0 was added in Bash 4.4 (http://stromberg.dnsalias.org/~strombrg/PS0-prompt/).
+#   macOS ships with Bash 3.x because newer versions are under GPL v3
+#   (https://www.reddit.com/r/bash/comments/393oqv/why_is_the_version_of_bash_included_in_os_x_so_old/)
+#   To make PS0 work, you'll need to install a more recent version of Bash
+#   (https://www.cyberciti.biz/faq/change-default-shell-to-bash-on-macos-catalina/).
 PS0_ELEMENTS=(
   "${SAVE_CURSOR_POSITION}"
   "\$(move_cursor_to_start_of_ps1)"
