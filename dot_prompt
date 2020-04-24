@@ -127,41 +127,100 @@ COMMAND_PROMPT_ELEMENTS=(
   "$(ansi_escape "${reset}")"
 )
 
+# Return the rows printed in the terminal since the previous command was
+# executed -- PS1, PS2, and the command that was executed. PS1 and the command
+# can each can span one or more lines, and PS2 is interpolated into the command
+# if relevant.
+#
+# @note This strips out ANSI escape sequences.
+lines_from_prompt_and_command() {
+  # `history 1` prints a command with some additional information: a whitespace-
+  # padded sequence number for the command's index in the `history`, and (if
+  # set), the result of passing `$HISTTIMEFORMAT` to `strftime`.
+  #
+  # The default `$HISTTIMEFORMAT`, which isn't set, will result in something
+  # like `   53  man read`. For a custom format like
+  # `HISTTIMEFORMAT="[%FT%T%z]%_*"`, `history 1` might return something
+  # like `   53  [2020-04-23T13:59:42-0700]*man read`.
+
+  local command
+  # This `sed` attempts to find static characters in `$HISTTIMEFORMAT` by
+  # stripping out everything prefixed with a `%` (indicating a date-time
+  # formatting token passed to `strftime`). It will produce an empty string if
+  # `HISTTIMEFORMAT` isn't set, or ends with a `%` formatting token.
+  static_histtimeformat="$(echo "${HISTTIMEFORMAT}" | sed -E 's/^.*%[[:alnum:]_]//')"
+  # If `static_histtimeformat` is a non-empty string, `cut` can easily strip
+  # out everything prior to the executed command, implicitly also stripping
+  # out the sequence number.
+  if [ -n "${static_histtimeformat}" ] ; then
+    command="$(history 1 | cut -d "${static_histtimeformat}" -f 2-)"
+  # Otherwise, simply strip out the sequence number.
+  else
+    # Using `\s+\d+\s+` as the pattern didn't seem to work, but it does work
+    # using character classes.
+    command="$(history 1 | sed -E 's/[[:space:]]+[[:digit:]]+[[:space:]]+//')"
+  fi
+
+  # Evaluate PS1 and PS2 to get an accurate view of how many lines they span.
+  # The `@P` operator was added in Bash 4.4.
+  #
+  # @see https://stackoverflow.com/a/37137981/672403
+  # @see https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+  expanded_PS1="$(printf '%s' "${PS1@P}")"
+  expanded_PS2="$(printf '%s' "${PS2@P}")"
+
+  # If the command spanned multiple lines (due to newlines, not soft-wrapping)
+  # put `$PS2_PROMPT` at the start of every line beginning with the second
+  # line, to match how things appear in the shell.
+  #
+  # @see https://gist.github.com/JPvRiel/b337dfee8f273aac1332447ed1342304
+  command_with_ps2="${command/$'\n'/$'\n'${expanded_PS2}}"
+
+  all_lines="${expanded_PS1}${command_with_ps2}"
+
+  # Strip ANSI escape sequences.
+  #
+  # `\x1B` is decimal 27, the escape key (`\e`), so this matches any sequence
+  # that begins with `\e[` followed by a digit, `;`, or letter.
+  #
+  # @see https://stackoverflow.com/a/43627833/672403
+  sanitized="$(echo "${all_lines}" | sed $'s,\x1B\[[0-9;]*[a-zA-Z],,g')"
+  echo "${sanitized}"
+}
+count_lines_after_timestamp_placeholder() {
+  # It's important to know how many lines `$TIMESTAMP_PLACEHOLDER` was printed
+  # before the line where the user enters commands, because that's how many
+  # lines backwards `move_cursor_to_start_of_ps1` will need to move to
+  # overwrite `$TIMESTAMP_PLACEHOLDER` with `$TIMESTAMP`.
+  #
+  # `$TIMESTAMP_PLACEHOLDER` may not be on the first line of PS1. This `perl`
+  # snippets removes any newlines before `$TIMESTAMP_PLACEHOLDER` to compensate
+  # for this.
+  relevant_lines="$(lines_from_prompt_and_command | perl -pe "s/^\s+//")"
+
+  # Count the rows consumed by PS1 + command, including lines that are so long
+  # the terminal soft-wraps them to multiple rows (e.g. if PS1 includes `\w`
+  # and you're in a deeply-nested directory).
+  #
+  # @see https://unix.stackexchange.com/a/275797
+  total_rows=0
+  while IFS=$'\n' read -r line ; do
+    line_length="${#line}"
+    # Bash arithmetic rounds down; this is a trick to fake rounding up.
+    #
+    # @see https://stackoverflow.com/a/2395294/672403
+    (( line_rows = (line_length + COLUMNS - 1) / COLUMNS ))
+    (( total_rows += line_rows ))
+  done <<< "${relevant_lines}"
+
+  echo "${total_rows}"
+}
+
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
 move_cursor_to_start_of_ps1() {
-  local lines
-  command_rows="$(history 1 | wc -l)"
-  if [ "${command_rows}" -gt 1 ]; then
-    lines="${command_rows}"
-  else
-    command="$(history 1 | sed -E 's:^.+\*::')"
-    command_length="${#command}"
-    ps1_prompt_length="${#PS1_PROMPT}"
-    (( total_length = command_length + ps1_prompt_length ))
-    (( lines = total_length / COLUMNS + 1 ))
-  fi
-  # The timestamp placeholder may not be on the first line of PS1, and PS1
-  # may be more than 1-2 lines. This uses sed to strips out everything before
-  # the placeholder, then gets the number of lines with wc. Note that if
-  # $TIMESTAMP_PLACEHOLDER contains '/' this sed command will fail -- in that
-  # case the '/'s in the command will need to be replaced with a different
-  #  delimiter. (I often use ':', e.g. "sed 's:xx:yy:'", but
-  # $TIMESTAMP_PLACEHOLDER contains ':'.)
-  # * The timestamp placeholder may not be on the first line of `$PS1`, and
-  #   `$PS1` may be more than 1-2 lines. This uses `sed` to strip out
-  #   everything before the placeholder to ensure the line count is correct.
-  #   Note that if `$TIMESTAMP_PLACEHOLDER` contains `/` this `sed` command
-  #   will fail -- in that case the `/`s in the command will need to be
-  #   replaced with a different delimiter. (I often use `:`, e.g.
-  #   `"sed 's:xx:yy:'"`, but `$TIMESTAMP_PLACEHOLDER` contains `:`.)
-  # * `grep`'s `--fixed-strings` searches for "\n" sequences, rather than
-  #   literal newlines.
-  # * `grep`'s `--only-matching` prints just the "\n" sequences, so it's easier
-  #   to be sure `wc -l` is counting correctly.
-  ps1_lines="$(echo "${PS1}" | sed -E "s/.+${TIMESTAMP_PLACEHOLDER}//" | grep --fixed-strings "\n" --only-matching | wc -l)"
-  (( vertical_movement = lines + ps1_lines ))
-  tput cuu "$vertical_movement"
+  tput cuu "$(count_lines_after_timestamp_placeholder)"
 }
+
 # @note PS0 was added in Bash 4.4 (http://stromberg.dnsalias.org/~strombrg/PS0-prompt/).
 #   macOS ships with Bash 3.x because newer versions are under GPL v3
 #   (https://www.reddit.com/r/bash/comments/393oqv/why_is_the_version_of_bash_included_in_os_x_so_old/)

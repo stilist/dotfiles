@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add Yarn’s paths to `$PATH`
 - Set `$GOPATH` and add it to `$PATH`
+- When a command is run [display the timestamp above the PS1 command prompt](https://redandblack.io/blog/2020/bash-prompt-with-updating-time/)
 
 ### Fixed
 - Rename `.sh/` directory and files to match chezmoi’s conventions
