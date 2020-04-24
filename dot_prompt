@@ -246,8 +246,6 @@ git_status_prefix=(
   "$(ansi_escape "${blue}")"
 )
 PS1_ELEMENTS=(
-  # set current directory's `dirname` (`\W`) as terminal title
-  "$(ansi_escape "\033]0;\W\007")"
   # visually separate prompt from output of previous command
   "${NEWLINE}"
   # timestamp placeholder on its own line
