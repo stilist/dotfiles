@@ -1,15 +1,17 @@
 # dotfiles
 
 This repository has my personal set of [dotfiles](https://dotfiles.github.io),
-split across three main categories:
+split across several categories:
 
 * True ‘dotfiles’ -- configuration files with a name that begins with a `.`
   (like `.profile`).
-* Utility scripts are in `~/.sh/bin`. Each has a documentation block that
-  explains what the script does, and demonstrates how to use it. I use the
-  `histgrep` and `switch` utility scripts a *lot*.
-* ‘Session’ scripts are in `~/.sh/session`. These scripts do things like adding
-  to `$PATH`, creating shell aliases, and defining environment variables.
+* Utility scripts are in `dot_sh/bin`, which will be placed at `$HOME/.sh/bin`.
+  Each script has a documentation block that explains what the script does, and
+  demonstrates how to use it. I use the `histgrep` and `switch` utility scripts
+  a *lot*.
+* ‘Per-session’ scripts are in `dot_sh/session`, which will be placed at
+  `$HOME/.sh/session`. These scripts do things like adding to `$PATH`, creating
+  shell aliases, and defining environment variables.
 
 ## Installation
 
@@ -19,7 +21,7 @@ This repository depends on the [`chezmoi` tool](https://github.com/twpayne/chezm
 chezmoi init --apply --verbose https://github.com/stilist/dotfiles.git
 ```
 
-To make git commits, you’ll need to make sure `~/.config/chezmoi/chezmoi.toml`
+To make git commits, you’ll need to make sure `$HOME/.config/chezmoi/chezmoi.toml`
 has these keys defined, with your own values filled in:
 
 ```toml
