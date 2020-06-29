@@ -1,6 +1,34 @@
 [user]
   email = "{{ .git.email }}"
   name = "{{ .name }}"
+  # Assuming you've already generated a GPG keypair, you can use this command
+  # to get the public key for one of your active keypairs. Note that it will
+  # choose this keypair arbitrarily.
+  #
+  #   gpg --armor \
+  #       --export \
+  #       "$( \
+  #          gpg --list-secret-keys \
+  #              --keyid-format LONG \
+  #            | grep expires \
+  #            | grep '\[SC\]' \
+  #            | awk '{ print $2 }' \
+  #            | cut -d '/' -f 2 \
+  #       )"
+  #
+  # If you want to use a specific keypair, run
+  #
+  #     gpg --list-secret-keys --keyid-format LONG
+  #
+  # This will print a list of the keys you have installed. Once you find the
+  # keypair you're interested in (probably based on the associated email
+  # address), look for a string like 'rsa4096/<hex string>' -- for example,
+  # `rsa4096/C731AB053A9CF1F3`.
+  #
+  # Use the hex string after the `/` to get the public key.
+  #
+  #     # gpg --armor --export '<hex string>'
+  #     gpg --armor --export C731AB053A9CF1F3
   signingkey = "{{ .git.signingkey }}"
 
 [color]
