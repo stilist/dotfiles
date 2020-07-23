@@ -10,5 +10,5 @@ if which rbenv &>/dev/null ; then
 fi
 
 if [ -d "${HOME}/.rbenv/plugins/ruby-build" ] ; then
-  PATH="${HOME}/.rbenv/plugins/ruby-build/bin"
+  PATH="${PATH}:${HOME}/.rbenv/plugins/ruby-build/bin"
 fi
