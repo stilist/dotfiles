@@ -8,3 +8,7 @@ if which rbenv &>/dev/null ; then
   PATH="${PATH}:$(rbenv prefix)/bin"
   eval "$(rbenv init -)"
 fi
+
+if [ -d "${HOME}/.rbenv/plugins/ruby-build" ] ; then
+  PATH="${HOME}/.rbenv/plugins/ruby-build/bin"
+fi
