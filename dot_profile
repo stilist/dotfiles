@@ -5,7 +5,7 @@ export GIT_MERGE_AUTOEDIT=no
 if [ -f "$HOME/.rc" ] ; then
   . "$HOME/.rc"
 fi
-PATH="$HOME/.sh/bin:$PATH"
+PATH="$HOME/.sh/bin:$PATH:${HOME}/bin"
 
 if [ -f "$HOME/.prompt" ] ; then
   . "$HOME/.prompt"
