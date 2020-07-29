@@ -74,7 +74,7 @@ while getopts '0hln:' OPTION ; do
 done
 shift "$((OPTIND - 1))"
 
-query_pattern="${@:-}"
+query_pattern="${*:-}"
 if [ -z "${query_pattern}" ] ; then
   fail_with_usage "${usage}" "You must specify a query."
 fi
@@ -92,17 +92,17 @@ files_with_matches() {
   grep \
     --color=never \
     --files-with-matches \
-    --regexp="${@}" "${null_arg}" \
+    --regexp="${*}" ${null_arg} \
     "${HISTORY_PATH}"
 }
 
 matches() {
   use_null_terminator=true
 
-  files_with_matches "${@}" \
+  files_with_matches "${*}" \
     | xargs -0 \
       grep \
-        --regexp="${@}" \
+        --regexp="${*}" \
         --color=always
 }
 
