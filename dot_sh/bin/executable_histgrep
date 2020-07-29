@@ -42,8 +42,8 @@ sorter_path="$(dirname "$0")/../support/histgrep_sort.rb"
 # `sed`: remove directory name from output
 # `ruby`: sort lines by file timestamp
 # `awk`: colorize filename and add space between colon and match
-matches "${query_pattern}" |
-  sed s:"$HISTORY_PATH/":: |
-  ruby --disable-gems "$sorter_path" |
-  awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
+matches "${query_pattern}" \
+  | sed s:"$HISTORY_PATH/":: \
+  | ruby --disable-gems "$sorter_path" \
+  | awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
     '{ print VIOLET $1 RESET FS " " substr($0, index($0, $2)) }'
