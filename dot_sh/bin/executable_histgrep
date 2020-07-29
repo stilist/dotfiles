@@ -34,21 +34,23 @@ Flags:
 \t-0\tprint matches separated by the NUL (0x0) character instead of a newline
 \t-h\tdisplay this help message
 \t-l\tprint the paths for history files that match the query
+\t-n NUM\treturn at most NUM results
 
 Example:
 \t${my_name} ssh
-\t${my_name} 'ln -s'
+\t${my_name} -n 10 'ln -s'
 \t${my_name} '\\\b[[:alpha:]]at\\\b' # matches both 'bat' and 'cat' tools
 \t${my_name} -0 -l openssl
 EOM
 )"
 
+maximum_results=
 print_filenames=true
 print_matches=true
 use_null_terminator=false
 
 . "${support_path}/fail_with_usage.sh"
-while getopts '0hl' OPTION ; do
+while getopts '0hln:' OPTION ; do
   case "${OPTION}" in
   0)
     use_null_terminator=true
@@ -58,6 +60,12 @@ while getopts '0hl' OPTION ; do
     ;;
   l)
     print_matches=false
+    ;;
+  n)
+    maximum_results="${OPTARG}"
+    if ! [[ "${maximum_results}" =~ "^[[:digit:]]+$" ]] ; then
+      fail_with_usage "${usage}" "The NUM given for '-n NUM' must be a non-negative integer."
+    fi
     ;;
   ?)
     fail_with_usage "${usage}"
@@ -104,12 +112,23 @@ sorter_path="${support_path}/histgrep_sort.rb"
 if [ "${print_matches}" = true ] ; then
   # `sed`: remove directory name from output
   # `awk`: colorize filename and add space between colon and match
-  matches "${query_pattern}" \
-    | sed s:"$HISTORY_PATH/":: \
-    | ruby --disable-gems "$sorter_path" \
-    | awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
-      '{ print VIOLET $1 RESET FS " " substr($0, index($0, $2)) }'
+  results="$(
+    matches "${query_pattern}" \
+      | sed s:"$HISTORY_PATH/":: \
+      | ruby --disable-gems "$sorter_path" \
+      | awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
+        '{ print VIOLET $1 RESET FS " " substr($0, index($0, $2)) }'
+  )"
 else
-  files_with_matches "${query_pattern}" \
-    | ruby --disable-gems "$sorter_path"
+  results="$(
+    files_with_matches "${query_pattern}" \
+      | ruby --disable-gems "$sorter_path"
+  )"
+fi
+
+if [ -n "${maximum_results}" ] ; then
+  echo "${results}" \
+    | tail -n "${maximum_results}"
+else
+  echo "${results}"
 fi
