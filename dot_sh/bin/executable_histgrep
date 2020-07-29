@@ -32,6 +32,7 @@ Usage: ${my_name} QUERY
 
 Flags:
 \t-h\tdisplay this help message
+\t-l\tprint the paths for history files that match the query
 
 Example:
 \t${my_name} ssh
@@ -40,11 +41,17 @@ Example:
 EOM
 )"
 
+print_filenames=true
+print_matches=true
+
 . "${support_path}/fail_with_usage.sh"
-while getopts 'h' OPTION ; do
+while getopts 'hl' OPTION ; do
   case "${OPTION}" in
   h)
     fail_with_usage "${usage}"
+    ;;
+  l)
+    print_matches=false
     ;;
   ?)
     fail_with_usage "${usage}"
@@ -58,27 +65,36 @@ if [ -z "${query_pattern}" ] ; then
   fail_with_usage "${usage}" "You must specify a query."
 fi
 
-matches() {
-  # `-S`: follow symbolic links in recursive mode
-  # `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
+# `-S`: follow symbolic links in recursive mode
+# `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
+export GREP_OPTIONS="--ignore-case --recursive -S --text"
+
+files_with_matches() {
   grep \
-    --color=always \
-    --ignore-case \
-    --recursive \
+    --files-with-matches \
     --regexp="${@}" \
-    -S \
-    --text \
+    "${HISTORY_PATH}"
+}
+
+matches() {
+  grep \
+    --regexp="${@}" \
+    --color=always \
     "${HISTORY_PATH}"
 }
 
 sorter_path="${support_path}/histgrep_sort.rb"
 
-# `grep`: search files for matches
-# `sed`: remove directory name from output
 # `ruby`: sort lines by file timestamp
-# `awk`: colorize filename and add space between colon and match
-matches "${query_pattern}" \
-  | sed s:"$HISTORY_PATH/":: \
-  | ruby --disable-gems "$sorter_path" \
-  | awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
-    '{ print VIOLET $1 RESET FS " " substr($0, index($0, $2)) }'
+if [ "${print_matches}" = true ] ; then
+  # `sed`: remove directory name from output
+  # `awk`: colorize filename and add space between colon and match
+  matches "${query_pattern}" \
+    | sed s:"$HISTORY_PATH/":: \
+    | ruby --disable-gems "$sorter_path" \
+    | awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
+      '{ print VIOLET $1 RESET FS " " substr($0, index($0, $2)) }'
+else
+  files_with_matches "${query_pattern}" \
+    | ruby --disable-gems "$sorter_path"
+fi
