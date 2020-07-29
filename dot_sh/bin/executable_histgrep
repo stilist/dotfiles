@@ -31,6 +31,7 @@ Search and filter shell command history. Use this together with \e[1msession/his
 Usage: ${my_name} QUERY
 
 Flags:
+\t-0\tprint matches separated by the NUL (0x0) character instead of a newline
 \t-h\tdisplay this help message
 \t-l\tprint the paths for history files that match the query
 
@@ -38,15 +39,20 @@ Example:
 \t${my_name} ssh
 \t${my_name} 'ln -s'
 \t${my_name} '\\\b[[:alpha:]]at\\\b' # matches both 'bat' and 'cat' tools
+\t${my_name} -0 -l openssl
 EOM
 )"
 
 print_filenames=true
 print_matches=true
+use_null_terminator=false
 
 . "${support_path}/fail_with_usage.sh"
-while getopts 'hl' OPTION ; do
+while getopts '0hl' OPTION ; do
   case "${OPTION}" in
+  0)
+    use_null_terminator=true
+    ;;
   h)
     fail_with_usage "${usage}"
     ;;
@@ -69,10 +75,16 @@ fi
 # `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
 export GREP_OPTIONS="--ignore-case --recursive -S --text"
 
+null_arg=""
+if [ "${use_null_terminator}" = true ] ; then
+  null_arg="--null"
+fi
+
 files_with_matches() {
   grep \
+    --color=never \
     --files-with-matches \
-    --regexp="${@}" \
+    --regexp="${@}" "${null_arg}" \
     "${HISTORY_PATH}"
 }
 
