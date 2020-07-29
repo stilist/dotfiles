@@ -38,8 +38,8 @@ Flags:
 
 Example:
 \t${my_name} ssh
-\t${my_name} -n 10 'ln -s'
 \t${my_name} '\\\b[[:alpha:]]at\\\b' # matches both 'bat' and 'cat' tools
+\t${my_name} -n 10 'ln -s'
 \t${my_name} -0 -l openssl
 EOM
 )"
