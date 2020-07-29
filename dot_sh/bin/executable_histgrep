@@ -23,6 +23,35 @@ export GREP_COLOR='1;33' # yellow
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HISTORY_PATH="${DATA_HOME}/history-data/automated imports/shell"
 
+my_name="$(basename "${0}")"
+usage="$(cat <<EOM
+Search and filter shell command history. Use this together with \e[1msession/history.sh\e[0m.
+
+Usage: ${my_name} QUERY
+
+Flags:
+\t-h\tdisplay this help message
+
+Example:
+\t${my_name} ssh
+\t${my_name} 'ln -s'
+\t${my_name} '\\\b[[:alpha:]]at\\\b' # matches both 'bat' and 'cat' tools
+EOM
+)"
+
+while getopts 'h' OPTION ; do
+  case "${OPTION}" in
+  h)
+    echo -e "${usage}"
+    exit 0
+    ;;
+  ?)
+    echo -e "${usage}"
+    exit 1
+    ;;
+  esac
+done
+
 matches() {
   # `-S`: follow symbolic links in recursive mode
   # `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
