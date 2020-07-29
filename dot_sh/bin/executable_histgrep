@@ -16,8 +16,6 @@ IFS=$'\n\t'
 # @see https://stackoverflow.com/a/981831/672403
 ###
 
-query_pattern="${@:?}"
-
 export GREP_COLOR='1;33' # yellow
 
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -42,15 +40,22 @@ EOM
 while getopts 'h' OPTION ; do
   case "${OPTION}" in
   h)
-    echo -e "${usage}"
+    echo -e "${usage}" 1>&2
     exit 0
     ;;
   ?)
-    echo -e "${usage}"
+    echo -e "${usage}" 1>&2
     exit 1
     ;;
   esac
 done
+shift "$((OPTIND - 1))"
+
+query_pattern="${@:-}"
+if [ -z "${query_pattern}" ] ; then
+  echo -e "${usage}" 1>&2
+  exit 1
+fi
 
 matches() {
   # `-S`: follow symbolic links in recursive mode
