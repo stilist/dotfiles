@@ -21,6 +21,9 @@ export GREP_COLOR='1;33' # yellow
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HISTORY_PATH="${DATA_HOME}/history-data/automated imports/shell"
 
+script_pwd="$(dirname "${0}")"
+support_path="${script_pwd}/../support"
+
 my_name="$(basename "${0}")"
 usage="$(cat <<EOM
 Search and filter shell command history. Use this together with \e[1msession/history.sh\e[0m.
@@ -37,15 +40,14 @@ Example:
 EOM
 )"
 
+. "${support_path}/fail_with_usage.sh"
 while getopts 'h' OPTION ; do
   case "${OPTION}" in
   h)
-    echo -e "${usage}" 1>&2
-    exit 0
+    fail_with_usage "${usage}"
     ;;
   ?)
-    echo -e "${usage}" 1>&2
-    exit 1
+    fail_with_usage "${usage}"
     ;;
   esac
 done
@@ -53,8 +55,7 @@ shift "$((OPTIND - 1))"
 
 query_pattern="${@:-}"
 if [ -z "${query_pattern}" ] ; then
-  echo -e "${usage}" 1>&2
-  exit 1
+  fail_with_usage "${usage}" "You must specify a query."
 fi
 
 matches() {
@@ -70,7 +71,7 @@ matches() {
     "${HISTORY_PATH}"
 }
 
-sorter_path="$(dirname "$0")/../support/histgrep_sort.rb"
+sorter_path="${support_path}/histgrep_sort.rb"
 
 # `grep`: search files for matches
 # `sed`: remove directory name from output
