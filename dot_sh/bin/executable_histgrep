@@ -24,6 +24,7 @@ HISTORY_PATH="${DATA_HOME}/history-data/automated imports/shell"
 sorter_path="$(dirname "$0")/../support/histgrep_sort.rb"
 
 matches() {
+  # `-S`: follow symbolic links in recursive mode
   # `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
   grep \
     --color=always \
