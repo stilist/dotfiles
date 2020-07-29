@@ -23,8 +23,6 @@ export GREP_COLOR='1;33' # yellow
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HISTORY_PATH="${DATA_HOME}/history-data/automated imports/shell"
 
-sorter_path="$(dirname "$0")/../support/histgrep_sort.rb"
-
 matches() {
   # `-S`: follow symbolic links in recursive mode
   # `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
@@ -37,6 +35,8 @@ matches() {
     --text \
     "${HISTORY_PATH}"
 }
+
+sorter_path="$(dirname "$0")/../support/histgrep_sort.rb"
 
 # `grep`: search files for matches
 # `sed`: remove directory name from output
