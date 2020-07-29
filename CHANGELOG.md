@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Rename `.sh/` directory and files to match chezmoi’s conventions
 - Ensure `histgrep` will always treat history file as text, even if there’s binary data mixed in
+- `histgrep` will correctly handle spaces and regular expressions in search strings
 
 ## [1.0.0] - 2019-05-13
 ### Added

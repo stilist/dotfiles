@@ -16,6 +16,8 @@ IFS=$'\n\t'
 # @see https://stackoverflow.com/a/981831/672403
 ###
 
+query_pattern="${@:?}"
+
 export GREP_COLOR='1;33' # yellow
 
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -30,7 +32,7 @@ matches() {
     --color=always \
     --ignore-case \
     --recursive \
-    --regexp=$@ \
+    --regexp="${@}" \
     -S \
     --text \
     "${HISTORY_PATH}"
@@ -40,7 +42,7 @@ matches() {
 # `sed`: remove directory name from output
 # `ruby`: sort lines by file timestamp
 # `awk`: colorize filename and add space between colon and match
-matches "${@}" |
+matches "${query_pattern}" |
   sed s:"$HISTORY_PATH/":: |
   ruby --disable-gems "$sorter_path" |
   awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
