@@ -63,7 +63,7 @@ while getopts '0hln:' OPTION ; do
     ;;
   n)
     maximum_results="${OPTARG}"
-    if ! [[ "${maximum_results}" =~ "^[[:digit:]]+$" ]] ; then
+    if ! [[ "${maximum_results}" =~ ^[0-9]+$ ]] ; then
       fail_with_usage "${usage}" "The NUM given for '-n NUM' must be a non-negative integer."
     fi
     ;;
