@@ -7,6 +7,14 @@
 # T: full timestamp
 {{- if eq .chezmoi.os "darwin" }}
 alias lsl='ls -AGlpT'
-{{ else if eq .chezmoi.os "linux" }}
+{{- else if eq .chezmoi.os "linux" }}
 alias lsl='ls --almost-all --color=always -l --indicator-style=slash --time-style="+%FT%T%z"'
-{{ end }}
+{{- end }}
+
+if ! type ll >/dev/null 2>&1 ; then
+  {{- if eq .chezmoi.os "darwin" }}
+  alias ll='ls -Gl'
+  {{- else if eq .chezmoi.os "linux" }}
+  alias ll='ls -l --color=auto'
+  {{- end }}
+fi

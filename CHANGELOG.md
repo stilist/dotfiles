@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update global `.gitconfig` (`$HOME/.gitconfig`) to use `develop` as the default branch name for new git repositories (rather than `master`)
 - Document how to find a GPG signing key for git
 - Add flags to `histgrep` command. Run `histgrep -h` for usage information.
+- Add `ll` alias for macOS.
 
 ### Fixed
 - Rename `.sh/` directory and files to match chezmoi’s conventions
