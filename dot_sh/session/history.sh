@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-HISTORY_PATH="${DATA_HOME}/history"
-if [ ! -e "$HISTORY_PATH" ] ; then
-  mkdir -p "$HISTORY_PATH"
+HISTDIR="${DATA_HOME}/history"
+if [ ! -e "$HISTDIR" ] ; then
+  mkdir -p "$HISTDIR"
 else
-  if [ -f "$HISTORY_PATH" ] ; then
-    mv "$HISTORY_PATH" "$HOME/history_old"
-    mkdir -p "$HISTORY_PATH"
-    mv "$HOME/history_old" "$HISTORY_PATH/old_history"
+  if [ -f "$HISTDIR" ] ; then
+    mv "$HISTDIR" "$HOME/history_old"
+    mkdir -p "$HISTDIR"
+    mv "$HOME/history_old" "$HISTDIR/old_history"
   fi
 fi
 
 if [ -f "${HOME}/.bash_history" ] ; then
-  mv "${HOME}/.bash_history" "${HISTORY_PATH}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
+  mv "${HOME}/.bash_history" "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
 fi
 
 timestamp_format="%FT%T%z"
@@ -31,7 +31,7 @@ HOSTNAME_SHORT="${HOSTNAME%%.*}"
 # @note ISO 8601 requires `:` for extended time format, but macOS uses the
 #   character as its path separator. `.` is close enough.
 timestamp="$(date -u "+${timestamp_format}" | sed s/:/./g)"
-HISTFILE="$HISTORY_PATH/${timestamp}_$(whoami)@${HOSTNAME_SHORT}_$$"
+HISTFILE="$HISTDIR/${timestamp}_$(whoami)@${HOSTNAME_SHORT}_$$"
 export HISTFILE
 
 # commands entered with leading whitespace are not saved in history
