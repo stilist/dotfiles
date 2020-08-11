@@ -4,12 +4,6 @@ DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HISTDIR="${HISTDIR:-$DATA_HOME/history}"
 if [ ! -e "$HISTDIR" ] ; then
   mkdir -p "$HISTDIR"
-else
-  if [ -f "$HISTDIR" ] ; then
-    mv "$HISTDIR" "$HOME/history_old"
-    mkdir -p "$HISTDIR"
-    mv "$HOME/history_old" "$HISTDIR/old_history"
-  fi
 fi
 
 if [ -f "${HOME}/.bash_history" ] ; then
