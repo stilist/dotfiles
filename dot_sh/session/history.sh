@@ -2,7 +2,10 @@
 
 DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
 HISTDIR="${HISTDIR:-${DATA_HOME}/history}"
-mkdir -p "${HISTDIR}"
+# If `HISTDIR` is a symlink to another directory `mkdir` will fail.
+if [ ! -L "${HISTDIR}" ] ; then
+  mkdir -p "${HISTDIR}"
+fi
 
 if [ -f "${HOME}/.bash_history" ] ; then
   mv "${HOME}/.bash_history" "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
