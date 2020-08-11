@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-HISTDIR="${DATA_HOME}/history"
+HISTDIR="${HISTDIR:-$DATA_HOME/history}"
 if [ ! -e "$HISTDIR" ] ; then
   mkdir -p "$HISTDIR"
 else
