@@ -2,8 +2,11 @@
 
 DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
 HISTDIR="${HISTDIR:-${DATA_HOME}/history}"
-# If `HISTDIR` is a symlink to another directory `mkdir` will fail.
-if [ ! -L "${HISTDIR}" ] ; then
+# Try to create `HISTDIR` if there's nothing at the path. The simple existence
+# check is necessary because macOS aliases aren't symlinks, and aren't treated
+# as a directory even if they point to a directory. This means the normal `-L`
+# (symlink) and `-d` (directory) tests fail.
+if [ ! -e "${HISTDIR}" ] ; then
   mkdir -p "${HISTDIR}"
 fi
 
