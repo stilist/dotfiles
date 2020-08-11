@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-HISTDIR="${HISTDIR:-$DATA_HOME/history}"
+DATA_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}"
+HISTDIR="${HISTDIR:-${DATA_HOME}/history}"
 mkdir -p "${HISTDIR}"
 
 if [ -f "${HOME}/.bash_history" ] ; then
@@ -23,7 +23,7 @@ HOSTNAME_SHORT="${HOSTNAME%%.*}"
 # @note ISO 8601 requires `:` for extended time format, but macOS uses the
 #   character as its path separator. `.` is close enough.
 timestamp="$(date -u "+${timestamp_format}" | sed s/:/./g)"
-HISTFILE="$HISTDIR/${timestamp}_$(whoami)@${HOSTNAME_SHORT}_$$"
+HISTFILE="${HISTDIR}/${timestamp}_$(whoami)@${HOSTNAME_SHORT}_$$"
 export HISTFILE
 
 # commands entered with leading whitespace are not saved in history
@@ -36,4 +36,4 @@ export HISTFILESIZE=10000000
 shopt -s histappend
 
 # Save history as commands are run, rather than when the session is terminated.
-export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+export PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
