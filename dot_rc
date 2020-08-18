@@ -5,3 +5,7 @@ if which gem >/dev/null 2>&1 ; then
   gempaths="$(gem environment gempath | sed -e "s/:/\/bin:/g")"
   PATH="$PATH:$gempaths/bin"
 fi
+
+if [ -f /etc/bashrc ] ; then
+  . /etc/bashrc
+fi
