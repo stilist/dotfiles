@@ -31,7 +31,7 @@ HOSTNAME_SHORT="${HOSTNAME%%.*}"
 # @note ISO 8601 requires `:` for extended time format, but macOS uses the
 #   character as its path separator. `.` is close enough.
 timestamp="$(date -u "+${timestamp_format}" | sed s/:/./g)"
-HISTFILE="$HISTORY_PATH/${timestamp}_${HOSTNAME_SHORT}_$$"
+HISTFILE="$HISTORY_PATH/${timestamp}_$(whoami)@${HOSTNAME_SHORT}_$$"
 export HISTFILE
 
 # commands entered with leading whitespace are not saved in history
