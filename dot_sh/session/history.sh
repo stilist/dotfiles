@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-HISTORY_PATH="${DATA_HOME}/history-data/automated imports/shell"
+HISTORY_PATH="${DATA_HOME}/history"
 if [ ! -e "$HISTORY_PATH" ] ; then
   mkdir -p "$HISTORY_PATH"
 else
