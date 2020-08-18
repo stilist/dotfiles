@@ -6,6 +6,10 @@ if which gem >/dev/null 2>&1 ; then
   PATH="$PATH:$gempaths/bin"
 fi
 
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
 if [ -f /etc/bashrc ] ; then
   . /etc/bashrc
 fi
