@@ -12,6 +12,10 @@ else
   fi
 fi
 
+if [ -f "${HOME}/.bash_history" ] ; then
+  mv "${HOME}/.bash_history" "${HISTORY_PATH}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
+fi
+
 timestamp_format="%FT%T%z"
 HISTTIMEFORMAT="[${timestamp_format}]%_*"
 export HISTTIMEFORMAT
