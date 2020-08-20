@@ -8,5 +8,5 @@ if which go >/dev/null 2>&1 ; then
   export GOPATH
 
   # @see https://github.com/golang/go/wiki/GOPATH#integrating-gopath
-  PATH="$PATH:${GOPATH//://bin:}/bin"
+  PATH="${PATH}:${GOPATH//://bin:}/bin"
 fi

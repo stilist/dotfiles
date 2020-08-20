@@ -6,4 +6,4 @@ DATABASE_URL=postgres://`whoami`@localhost
 export DATABASE_URL
 
 # Postgres.app - http://postgresapp.com
-PATH="$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin"
+PATH="${PATH}:/Applications/Postgres.app/Contents/Versions/latest/bin"
