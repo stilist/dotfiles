@@ -18,7 +18,7 @@ script_pwd="$(dirname "${0}")"
 # @example Force-push working branch without the risk of mistyping the branch name
 #   git push -f origin "$(git current-ref)"
 ###
-git_in_repo &>/dev/null || exit 1
+git_in_repo >/dev/null 2>&1 || exit 1
 git_in_initialized_repo || exit 1
 
 git symbolic-ref --quiet --short HEAD 2>/dev/null || \

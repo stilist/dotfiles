@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
-if which go >/dev/null 2>&1 ; then
+if command -v go >/dev/null 2>&1 ; then
   # Ensure $GOPATH is defined.
   #
   # @see https://golang.org/cmd/go/#hdr-GOPATH_environment_variable

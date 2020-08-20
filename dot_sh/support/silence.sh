@@ -12,5 +12,5 @@
 #   silence git status
 ###
 silence () {
-  "$@" &>/dev/null
+  "$@" >/dev/null 2>&1
 }
