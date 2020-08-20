@@ -16,7 +16,7 @@ git_try_remote_branch_checkout () {
   git_in_initialized_repo || return 1
 
   remote=$1
-  if [ -z "$remote" ] ; then
+  if [ -z "${remote}" ] ; then
     "Specify a remote" 1>&2
     return 1
   fi
@@ -27,14 +27,14 @@ git_try_remote_branch_checkout () {
     return 1
   fi
 
-  if ! git_remote_exists "$remote" ; then
+  if ! git_remote_exists "${remote}" ; then
     "Unknown remote" 1>&2
     return 1
   fi
 
-  # Does git know about a branch named `${branch}` on `$remote`?
-  if silence git show-ref --verify --quiet "refs/remotes/$remote/${branch}" ; then
-    git checkout -t "$remote/${branch}"
+  # Does git know about a branch named `${branch}` on `${remote}`?
+  if silence git show-ref --verify --quiet "refs/remotes/${remote}/${branch}" ; then
+    git checkout -t "${remote}/${branch}"
   else
     return 1
   fi

@@ -58,5 +58,5 @@ else
     branch=$(git current-ref)
   fi
 
-  git pull --rebase "$remote" "${branch}"
+  git pull --rebase "${remote}" "${branch}"
 fi

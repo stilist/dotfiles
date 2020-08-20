@@ -30,6 +30,6 @@ else
   remote="$3"
 fi
 
-if [ -n "$remote" ] ; then
-  git push "$remote" "${branch}"
+if [ -n "${remote}" ] ; then
+  git push "${remote}" "${branch}"
 fi

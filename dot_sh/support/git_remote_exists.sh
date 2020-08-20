@@ -16,10 +16,10 @@ git_remote_exists () {
   git_in_initialized_repo || return 1
 
   remote=$1
-  if [ -z "$remote" ] ; then
+  if [ -z "${remote}" ] ; then
     "Specify a remote" 1>&2
     return 1
   else
-    git remote | silence grep "$remote"
+    git remote | silence grep "${remote}"
   fi
 }
