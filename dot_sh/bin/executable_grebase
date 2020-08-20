@@ -54,9 +54,9 @@ else
   set -u
 
   # `grebase`
-  if [ -z "$branch" ] ; then
+  if [ -z "${branch}" ] ; then
     branch=$(git current-ref)
   fi
 
-  git pull --rebase "$remote" "$branch"
+  git pull --rebase "$remote" "${branch}"
 fi

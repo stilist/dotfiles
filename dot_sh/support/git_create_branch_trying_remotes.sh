@@ -21,17 +21,17 @@ git_create_branch_trying_remotes () {
   git_in_initialized_repo || return 1
 
   branch=$1
-  if [ -z "$branch" ] ; then
+  if [ -z "${branch}" ] ; then
     "Specify a branch" 1>&2
     return 1
   fi
 
   # Try to check out a tracking branch from the 'upstream' remote.
-  silence git_try_remote_branch_checkout "upstream" "$branch" && return 0
+  silence git_try_remote_branch_checkout "upstream" "${branch}" && return 0
 
   # Try to check out a tracking branch from the 'origin' remote.
-  silence git_try_remote_branch_checkout "origin" "$branch" && return 0
+  silence git_try_remote_branch_checkout "origin" "${branch}" && return 0
 
   # The branch doesn't seem to exist anywhere, so create it locally.
-  git checkout -b "$branch"
+  git checkout -b "${branch}"
 }

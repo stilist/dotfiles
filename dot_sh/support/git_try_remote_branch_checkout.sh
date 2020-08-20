@@ -22,7 +22,7 @@ git_try_remote_branch_checkout () {
   fi
 
   branch=$2
-  if [ -z "$branch" ] ; then
+  if [ -z "${branch}" ] ; then
     "Specify a branch" 1>&2
     return 1
   fi
@@ -32,9 +32,9 @@ git_try_remote_branch_checkout () {
     return 1
   fi
 
-  # Does git know about a branch named `$branch` on `$remote`?
-  if silence git show-ref --verify --quiet "refs/remotes/$remote/$branch" ; then
-    git checkout -t "$remote/$branch"
+  # Does git know about a branch named `${branch}` on `$remote`?
+  if silence git show-ref --verify --quiet "refs/remotes/$remote/${branch}" ; then
+    git checkout -t "$remote/${branch}"
   else
     return 1
   fi

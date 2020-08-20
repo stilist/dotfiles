@@ -24,17 +24,17 @@ git_in_initialized_repo || exit 1
 ###
 
 branch="$1"
-if [ -z "$branch" ] ; then
+if [ -z "${branch}" ] ; then
   "Specify a branch name" 1>&2
   exit 1
 fi
 
 # http://stackoverflow.com/q/5167957/672403
 #
-# Is there a local branch named `$branch`?
-if git show-ref --verify --quiet "refs/heads/$branch" ; then
-  git checkout "$branch"
+# Is there a local branch named `${branch}`?
+if git show-ref --verify --quiet "refs/heads/${branch}" ; then
+  git checkout "${branch}"
 else
   . "${script_pwd}/../support/git_create_branch_trying_remotes.sh"
-  git_create_branch_trying_remotes "$branch"
+  git_create_branch_trying_remotes "${branch}"
 fi
