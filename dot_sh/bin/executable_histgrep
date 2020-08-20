@@ -81,7 +81,8 @@ fi
 
 # `-S`: follow symbolic links in recursive mode
 # `--text`: https://utcc.utoronto.ca/~cks/space/blog/unix/GNUGrepForceText
-export GREP_OPTIONS="--ignore-case --recursive -S --text"
+GREP_OPTIONS="--ignore-case --recursive -S --text"
+export GREP_OPTIONS
 
 files_with_matches() {
   null_arg=""
