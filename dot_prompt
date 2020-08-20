@@ -7,6 +7,14 @@ elif infocmp xterm-256color >/dev/null 2>&1; then
   export TERM='xterm-256color';
 fi;
 
+bash_minor_version="$(echo "${BASH_VERSION}" | egrep --only-matching "^[[:digit:]]+\.[[:digit:]]")"
+# @see https://stromberg.dnsalias.org/~strombrg/PS0-prompt/
+if [ "$(echo "${bash_minor_version} > 4.4" | bc -l)" -eq 1 ] ; then
+  supports_PS0="t"
+else
+  supports_PS0="f"
+fi
+
 # @see https://github.com/mathiasbynens/dotfiles/blob/13e29f408fc360360b4468aef2c318dff287c7d2/.bash_prompt#L14-L58
 prompt_git() {
   local s='';
@@ -218,7 +226,9 @@ count_lines_after_timestamp_placeholder() {
 
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
 move_cursor_to_start_of_ps1() {
-  tput cuu "$(count_lines_after_timestamp_placeholder)"
+  if [[ "${supports_PS0}" = "t" ]] ; then
+    tput cuu "$(count_lines_after_timestamp_placeholder)"
+  fi
 }
 
 # @note PS0 was added in Bash 4.4 (http://stromberg.dnsalias.org/~strombrg/PS0-prompt/).
@@ -240,6 +250,17 @@ PS0_ELEMENTS=(
 PS0=$(IFS=; echo "${PS0_ELEMENTS[*]}")
 export PS0
 
+if [[ "${supports_PS0}" = "t" ]] ; then
+  TIMESTAMP_LINE_ELEMENTS=(
+    "$(ansi_escape "${PROMPT_COLOUR}")" "${TIMESTAMP_PLACEHOLDER}"
+    "$(ansi_escape "${reset}")"
+    "${NEWLINE}"
+  )
+  TIMESTAMP_LINE=$(IFS=; echo "${TIMESTAMP_LINE_ELEMENTS[*]}")
+else
+  TIMESTAMP_LINE=""
+fi
+
 git_branch_prefix=(
   "$(ansi_escape "${white}")" "on" "$(ansi_escape "${violet}")"
 )
@@ -249,10 +270,7 @@ git_status_prefix=(
 PS1_ELEMENTS=(
   # visually separate prompt from output of previous command
   "${NEWLINE}"
-  # timestamp placeholder on its own line
-  "$(ansi_escape "${PROMPT_COLOUR}")" "${TIMESTAMP_PLACEHOLDER}"
-  "$(ansi_escape "${reset}")"
-  "${NEWLINE}"
+  "${TIMESTAMP_LINE}"
   "$(ansi_escape "${userColor}")" "${USERNAME}"
   "$(ansi_escape "${white}")" " at"
   # hostname
