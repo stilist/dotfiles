@@ -234,6 +234,7 @@ PS0_ELEMENTS=(
   "${NEWLINE}"
   "$(IFS=; echo "${COMMAND_PROMPT_ELEMENTS[*]}")"
   # Push output to the line below the end of PS1 & the user input.
+  "\$(printf '\n%.0s' {1..count_lines_after_timestamp_placeholder})"
   "${NEWLINE}"
 )
 PS0=$(IFS=; echo "${PS0_ELEMENTS[*]}")
