@@ -114,8 +114,8 @@ if [ "${print_matches}" = true ] ; then
   # `awk`: colorize filename and add space between colon and match
   results="$(
     matches "${query_pattern}" \
-      | sed s:"$HISTORY_PATH/":: \
       | ruby --disable-gems "$sorter_path" \
+      | sed s:"$HISTORY_PATH/":: \
       | awk -F ':' -v VIOLET='\033[1;35m' -v RESET='\033[0m' \
         '{ print VIOLET $1 RESET FS " " substr($0, index($0, $2)) }'
   )"
