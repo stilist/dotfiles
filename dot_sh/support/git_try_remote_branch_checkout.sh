@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
 script_pwd="$(dirname "$0")"
-. "$script_pwd/../support/silence.sh"
-. "$script_pwd/../support/git_in_initialized_repo.sh"
-. "$script_pwd/../support/git_remote_exists.sh"
+. "${script_pwd}/../support/silence.sh"
+. "${script_pwd}/../support/git_in_initialized_repo.sh"
+. "${script_pwd}/../support/git_remote_exists.sh"
 
 ###
 # `git_try_remote_branch_checkout`

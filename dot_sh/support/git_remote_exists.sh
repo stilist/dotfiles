@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 script_pwd="$(dirname "$0")"
-. "$script_pwd/../support/silence.sh"
-. "$script_pwd/../support/git_in_initialized_repo.sh"
+. "${script_pwd}/../support/silence.sh"
+. "${script_pwd}/../support/git_in_initialized_repo.sh"
 
 ###
 # `git_remote_exists`

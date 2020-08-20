@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 script_pwd="$(dirname "$0")"
-. "$script_pwd/../support/git_in_repo.sh"
-. "$script_pwd/../support/git_in_initialized_repo.sh"
+. "${script_pwd}/../support/git_in_repo.sh"
+. "${script_pwd}/../support/git_in_initialized_repo.sh"
 
 ###
 # `git current-ref`
