@@ -11,7 +11,7 @@ if [ ! -e "${HISTDIR}" ] ; then
 fi
 
 if [ -f "${HOME}/.bash_history" ] ; then
-  mv "${HOME}/.bash_history" "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
+  mv -f "${HOME}/.bash_history" "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
 fi
 
 timestamp_format="%FT%T%z"
