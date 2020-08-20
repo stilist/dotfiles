@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-script_pwd="$(dirname "$0")"
+script_pwd="$(dirname "${0}")"
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
 git_in_initialized_repo || exit 1
 
@@ -22,7 +22,7 @@ git_in_initialized_repo || exit 1
 #   git cherry-pick commit_ids # (For example, `git cherry-pick a8aef0f 0ea8038`)
 ###
 
-if [ -z "$1" ] ; then
+if [ -z "${1}" ] ; then
   echo 'Specify a pattern to search for' 1>&2
   exit 1
 fi
@@ -33,15 +33,15 @@ no_results () {
 }
 
 # Search for commits matching `$1`.
-matching_commits="$(git reflog | grep 'commit:' | egrep "$1")"
-if [ "$?" -eq '1' ] ; then
+matching_commits="$(git reflog | grep 'commit:' | grep -E "${1}")"
+if [ "${?}" -eq '1' ] ; then
   no_results
 fi
-if [ -z "$matching_commits" ] ; then
+if [ -z "${matching_commits}" ] ; then
   no_results
 fi
 
 echo
 
-hashes="$(echo "$matching_commits" | cut -d ' ' -f 1)"
-echo "$hashes"
+hashes="$(echo "${matching_commits}" | cut -d ' ' -f 1)"
+echo "${hashes}"
