@@ -21,4 +21,4 @@ echo '  PID CMD' 1>&2
 # o: select output columns; `=` is usually followed by a keyword, but omitting
 #    keywords hides the column title
 # x: include non-interactive processes
-ps -ax -o pid=,command= | grep --ignore-case "$1" | egrep --invert-match "($0|grep --ignore-case $1)"
+ps -ax -o pid=,command= | grep --ignore-case "${1}" | egrep --invert-match "(${0}|grep --ignore-case ${1})"

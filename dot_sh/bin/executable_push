@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-script_pwd="$(dirname "$0")"
+script_pwd="$(dirname "${0}")"
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
 git_in_initialized_repo || exit 1
 
@@ -21,13 +21,13 @@ git_in_initialized_repo || exit 1
 ###
 
 # `push to origin` (uses current branch)
-if [ "$1" = "to" ] ; then
+if [ "${1}" = "to" ] ; then
   branch="$(git current-ref)"
-  remote="$2"
+  remote="${2}"
 # `push feature/add-widget to upstream`
 else
-  branch="$1"
-  remote="$3"
+  branch="${1}"
+  remote="${3}"
 fi
 
 if [ -n "${remote}" ] ; then

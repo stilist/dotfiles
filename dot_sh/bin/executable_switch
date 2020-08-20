@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-script_pwd="$(dirname "$0")"
+script_pwd="$(dirname "${0}")"
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
 git_in_initialized_repo || exit 1
 
@@ -23,7 +23,7 @@ git_in_initialized_repo || exit 1
 #   switch bug/window-close
 ###
 
-branch="$1"
+branch="${1}"
 if [ -z "${branch}" ] ; then
   "Specify a branch name" 1>&2
   exit 1

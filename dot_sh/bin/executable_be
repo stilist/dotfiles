@@ -12,4 +12,4 @@ IFS=$'\n\t'
 #   be rails server
 ###
 
-bundle exec "$@"
+bundle exec "${@}"

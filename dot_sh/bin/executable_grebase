@@ -3,7 +3,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-script_pwd="$(dirname "$0")"
+script_pwd="$(dirname "${0}")"
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
 git_in_initialized_repo || exit 1
 
@@ -43,12 +43,12 @@ if [ -d "$(git rev-parse --git-path rebase-apply)" ] ; then
 else
   # `grebase origin master`
   set +u
-  if [ -n "$2" ] ; then
-    branch=$2
-    remote=$1
+  if [ -n "${2}" ] ; then
+    branch=${2}
+    remote=${1}
   # `grebase master`
   else
-    branch="$1"
+    branch="${1}"
     remote="origin"
   fi
   set -u
