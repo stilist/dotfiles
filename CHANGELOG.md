@@ -11,13 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When a command is run [display the timestamp above the PS1 command prompt](https://redandblack.io/blog/2020/bash-prompt-with-updating-time/)
 - Update global `.gitconfig` (`$HOME/.gitconfig`) to use `develop` as the default branch name for new git repositories (rather than `master`)
 - Document how to find a GPG signing key for git
-- Add flags to `histgrep` command. Run `histgrep -h` for usage information.
-- Add `ll` alias for macOS.
+- Add flags to `histgrep` command---run `histgrep -h` for usage information
+- Add `ll` alias for macOS
+- Add `cp`, `mv`, and `rm` safety aliases that prompt for confirmation
 
 ### Fixed
 - Rename `.sh/` directory and files to match chezmoi’s conventions
 - Ensure `histgrep` will always treat history file as text, even if there’s binary data mixed in
 - `histgrep` will correctly handle spaces and regular expressions in search strings
+- Adjust `session` scripts that modify `$PATH` to always use `which`
 
 ## [1.0.0] - 2019-05-13
 ### Added
