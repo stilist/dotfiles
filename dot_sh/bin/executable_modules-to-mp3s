@@ -21,11 +21,11 @@ set -euo pipefail
 
 IFS=$' '
 REQUIREMENTS="ffmpeg xmp"
-for requirement in $REQUIREMENTS ; do
+for requirement in ${REQUIREMENTS} ; do
   # @see https://stackoverflow.com/a/677212/672403
   command -v "${requirement}" >/dev/null 2>&1 || {
-    echo "This script requires $requirement." 1>&2
-    echo "You can install it from Homebrew: brew install $requirement" 1>&2
+    echo "This script requires ${requirement}." 1>&2
+    echo "You can install it from Homebrew: brew install ${requirement}" 1>&2
     exit 1
   }
 done
@@ -61,9 +61,9 @@ absolute_path () {
 }
 
 # @note These need to be exported so they're visible in the exported functions.
-INPUT_PATH="$(absolute_path "${1:-$PWD}" input)"
+INPUT_PATH="$(absolute_path "${1:-${PWD}}" input)"
 export INPUT_PATH
-OUTPUT_PATH="$(absolute_path "${2:-$INPUT_PATH}" output)"
+OUTPUT_PATH="$(absolute_path "${2:-${INPUT_PATH}}" output)"
 export OUTPUT_PATH
 TMP_PATH="${OUTPUT_PATH}/tmp"
 export TMP_PATH
