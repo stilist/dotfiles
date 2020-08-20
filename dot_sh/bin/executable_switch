@@ -4,6 +4,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 script_pwd="$(dirname "${0}")"
+# shellcheck source=./../support/git_in_initialized_repo.sh
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
 git_in_initialized_repo || exit 1
 
@@ -35,6 +36,7 @@ fi
 if git show-ref --verify --quiet "refs/heads/${branch}" ; then
   git checkout "${branch}"
 else
+  # shellcheck source=./../support/git_create_branch_trying_remotes.sh
   . "${script_pwd}/../support/git_create_branch_trying_remotes.sh"
   git_create_branch_trying_remotes "${branch}"
 fi

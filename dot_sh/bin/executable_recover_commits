@@ -4,6 +4,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 script_pwd="$(dirname "${0}")"
+# shellcheck source=./../support/git_in_initialized_repo.sh
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
 git_in_initialized_repo || exit 1
 

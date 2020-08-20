@@ -1,8 +1,11 @@
 #!/usr/bin/env sh
 
 script_pwd="$(dirname "$0")"
+# shellcheck source=./../support/silence.sh
 . "${script_pwd}/../support/silence.sh"
+# shellcheck source=./../support/git_in_initialized_repo.sh
 . "${script_pwd}/../support/git_in_initialized_repo.sh"
+# shellcheck source=./../support/git_try_remote_branch_checkout.sh
 . "${script_pwd}/../support/git_try_remote_branch_checkout.sh"
 
 ###

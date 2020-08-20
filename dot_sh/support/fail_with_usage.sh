@@ -3,6 +3,7 @@
 set -euo pipefail
 
 script_pwd="$(dirname "${0}")"
+# shellcheck source=./../support/colors.sh
 . "${script_pwd}/../support/colors.sh"
 
 fail_with_usage() {
