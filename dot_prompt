@@ -9,7 +9,7 @@ fi;
 
 bash_minor_version="$(echo "${BASH_VERSION}" | egrep --only-matching "^[[:digit:]]+\.[[:digit:]]")"
 # @see https://stromberg.dnsalias.org/~strombrg/PS0-prompt/
-if [ "$(echo "${bash_minor_version} > 4.4" | bc -l)" -eq 1 ] ; then
+if [ "$(echo "${bash_minor_version}" | awk '{ print ($1 >= 4.4) }')" -eq 1 ] ; then
   supports_PS0="t"
 else
   supports_PS0="f"
