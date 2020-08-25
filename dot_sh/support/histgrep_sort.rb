@@ -11,7 +11,9 @@ sorted = lines.sort_by do |line|
   iso = line.match(FILENAME_PATTERN)
     .to_s
     .sub(/(T\d{2})\.(\d{2})\.(\d{2})/, '\1:\2:\3')
-  iso == '' ? Time.new(1900) : Time.parse(iso)
+  if iso.empty? || iso =~ /^0000/ then Time.new(1900)
+  else Time.parse(iso)
+  end
 end
 
 puts sorted

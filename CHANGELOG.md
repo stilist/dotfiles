@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Check Bash version using `awk` to handle systems that don’t have `bc` installed
 - Use `$HISTDIR` in `histgrep` command
+- Adjust `histgrep`'s `histgrep_sort` helper to handle files with a `0000-00-00` timestamp in the filename
 
 ## [1.1.0] - 2020-08-19
 ### Added
