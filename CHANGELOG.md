@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Check Bash version using `awk` to handle systems that don’t have `bc` installed
+- Use `$HISTDIR` in `histgrep` command
 
 ## [1.1.0] - 2020-08-19
 ### Added
