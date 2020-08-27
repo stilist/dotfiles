@@ -1,6 +1,14 @@
 [user]
+  {{- if (index . "git") }}
   email = "{{ .git.email }}"
+  {{- else }}
+  email = "{{ .chezmoi.username }}@{{ .chezmoi.fullHostname }}"
+  {{- end }}
+  {{- if (index . "name") }}
   name = "{{ .name }}"
+  {{- else }}
+  name = "{{ .chezmoi.username }}"
+  {{- end }}
   # Assuming you've already generated a GPG keypair, you can use this command
   # to get the public key for one of your active keypairs. Note that it will
   # choose this keypair arbitrarily.
@@ -27,7 +35,11 @@
   # public key.
   #
   #     gpg --armor --export C731AB053A9CF1F3
+  {{- if (index . "git") }}
   signingkey = "{{ .git.signingkey }}"
+  {{- else }}
+  # signingkey = ""
+  {{- end }}
 
 [color]
   ui = auto
