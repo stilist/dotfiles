@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - If session is connected via SSH the hostname will be followed by the name of the machine that made the connection
+- Put a colored emoji next to the hostname as a reminder of how dangerous a bad command on the host will be — these use a continuous color scale so they should be usable with colorblindness
 
 ### Fixed
 - Check Bash version using `awk` to handle systems that don’t have `bc` installed

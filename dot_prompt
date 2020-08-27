@@ -138,6 +138,18 @@ else
   VIA_HOSTNAME=""
 fi
 
+if [[ "${LANG}" =~ "UTF-8" ]] ; then
+  HOST_EMOJI="🟤"
+  if [[ "$(hostname)" =~ "dev-" ]] ; then
+    HOST_EMOJI="🟡"
+  elif [[ "$(hostname)" =~ "staging-" ]] ; then
+    HOST_EMOJI="🟠"
+  elif [[ "$(is_ssh_connection)" = "0" ]] ; then
+    HOST_EMOJI="🔴"
+  fi
+  HOST_EMOJI=" ${HOST_EMOJI} "
+fi
+
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
 DIRECTORY="\w"
 HOSTNAME="\h"
@@ -305,7 +317,7 @@ PS1_ELEMENTS=(
   "$(ansi_escape "${reset}")"
   "$(ansi_escape "${white}")" " at"
   # hostname
-  "$(ansi_escape "${hostColor}")" " ${HOSTNAME}"
+  "$(ansi_escape "${hostColor}")" "${HOST_EMOJI}" "${HOSTNAME}"
   "$(ansi_escape "${reset}")"
   "$(ansi_escape "${yellow}")" "${VIA_HOSTNAME}"
   "$(ansi_escape "${white}")" " in"
