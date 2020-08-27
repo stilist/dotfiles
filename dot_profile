@@ -1,4 +1,10 @@
-export EDITOR=nano
+if command -v nano > /dev/null 2>&1 ; then
+  EDITOR=nano
+else
+  EDITOR=vi
+fi
+export EDITOR
+
 export GIT_MERGE_AUTOEDIT=no
 
 # Load `$PATH`s.
