@@ -5,12 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- If session is connected via SSH the hostname will be followed by the name of the machine that made the connection
+
 ### Fixed
 - Check Bash version using `awk` to handle systems that don’t have `bc` installed
 - Use `$HISTDIR` in `histgrep` command
 - Adjust `histgrep`'s `histgrep_sort` helper to handle files with a `0000-00-00` timestamp in the filename
 - Installation no longer requires a `chezmoi.toml` file — the `.gitconfig` template will use default values
 - Use `vi` as default text editor if `nano` isn’t installed
+- Improve logic for detecting SSH connections
+- If a session is connected via SSH the prompt string after the hostname will not be bold
 
 ## [1.1.0] - 2020-08-19
 ### Added

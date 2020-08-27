@@ -95,18 +95,48 @@ fi;
 
 # @see https://github.com/mathiasbynens/dotfiles/blob/13e29f408fc360360b4468aef2c318dff287c7d2/.bash_prompt#L90-L102
 # Highlight the user name when logged in as root.
-if [[ "${USER}" == "root" ]]; then
-  userColor="${red}";
+if [[ "${EUID}" = "0" || "${USER}" = "root" ]] ; then
+  userColor="${bold}${red}"
 else
-  userColor="${orange}";
-fi;
+  userColor="${orange}"
+fi
 
-# Highlight the hostname when connected via SSH.
-if [[ "${SSH_TTY}" ]]; then
-  hostColor="${bold}${red}";
+# Detect if this session is connected via SSH. `$SSH_TTY` is the simplest way
+# to check, but the variable won't be set inside `sudo su`, even if `SSH_TTY`
+# is in the `sudoers` `env_keep`.
+is_ssh_connection() {
+  local is_ssh
+  is_ssh='f'
+
+  if [ -n "${SSH_TTY}" ] ; then
+    is_ssh='t'
+  elif [ -n "${SSH_CONNECTION}" ] ; then
+    is_ssh='t'
+  # Local machine:
+  #     who am i
+  #     # jordancole ttys007  Aug 25 11
+  #
+  # SSH connection to remote machine:
+  #     whoami
+  #     # root  pts/0        2020-08-26 23:05 (macbook-air)
+  elif who am i | egrep --quiet "\(.+\)" ; then
+    is_ssh='t'
+  fi
+
+  if [[ "${is_ssh}" = 't' ]] ; then
+    echo 0
+  else
+    echo 1
+  fi
+}
+if [[ "$(is_ssh_connection)" = "0" ]] ; then
+  hostColor="${bold}${red}"
+  connecting_host="$(who am i | egrep --only-matching "\(.+\)" | sed s/^\(// | sed s/\)$//)"
+  VIA_HOSTNAME=" (via ${connecting_host})"
 else
-  hostColor="${yellow}";
-fi;
+  hostColor="${yellow}"
+  VIA_HOSTNAME=""
+fi
 
 # @see https://redandblack.io/blog/2020/bash-prompt-with-updating-time/
 DIRECTORY="\w"
@@ -272,9 +302,12 @@ PS1_ELEMENTS=(
   "${NEWLINE}"
   "${TIMESTAMP_LINE}"
   "$(ansi_escape "${userColor}")" "${USERNAME}"
+  "$(ansi_escape "${reset}")"
   "$(ansi_escape "${white}")" " at"
   # hostname
   "$(ansi_escape "${hostColor}")" " ${HOSTNAME}"
+  "$(ansi_escape "${reset}")"
+  "$(ansi_escape "${yellow}")" "${VIA_HOSTNAME}"
   "$(ansi_escape "${white}")" " in"
   "$(ansi_escape "${green}")" " ${DIRECTORY}"
   # git branch and status
