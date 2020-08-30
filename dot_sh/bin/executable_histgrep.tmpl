@@ -35,6 +35,7 @@ Flags:
 \t-h\tdisplay this help message
 \t-l\tprint the paths for history files that match the query
 \t-n NUM\treturn at most NUM results
+\t-r\tprint results in descending order (newest to oldest)
 
 Example:
 \t${my_name} ssh
@@ -47,10 +48,11 @@ EOM
 maximum_results=
 print_filenames=true
 print_matches=true
+reverse_results=false
 use_null_terminator=false
 
 . "${support_path}/fail_with_usage.sh"
-while getopts '0hln:' OPTION ; do
+while getopts '0hln:r' OPTION ; do
   case "${OPTION}" in
   0)
     use_null_terminator=true
@@ -66,6 +68,9 @@ while getopts '0hln:' OPTION ; do
     if ! [[ "${maximum_results}" =~ ^[0-9]+$ ]] ; then
       fail_with_usage "${usage}" "The NUM given for '-n NUM' must be a non-negative integer."
     fi
+    ;;
+  r)
+    reverse_results=true
     ;;
   ?)
     fail_with_usage "${usage}"
@@ -130,6 +135,10 @@ else
     files_with_matches "${query_pattern}" \
       | ruby --disable-gems "$sorter_path"
   )"
+fi
+
+if [ "${reverse_results}" = true ] ; then
+  results="$(echo "${results}" | perl -e "print reverse <>")"
 fi
 
 if [ -n "${maximum_results}" ] ; then
