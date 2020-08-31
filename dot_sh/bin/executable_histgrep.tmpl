@@ -90,7 +90,7 @@ GREP_OPTIONS="--ignore-case --text"
 {{- if eq .chezmoi.os "darwin" }}
 GREP_OPTIONS="${GREP_OPTIONS} --recursive -S"
 {{- else if eq .chezmoi.os "linux" }}
-GREP_OPTIONS="--dereference-recursive"
+GREP_OPTIONS="${GREP_OPTIONS} --dereference-recursive"
 {{- end }}
 export GREP_OPTIONS
 
