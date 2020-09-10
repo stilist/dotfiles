@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve logic for detecting SSH connections
 - If a session is connected via SSH the prompt string after the hostname will not be bold
 - Fix a bug that made `histgrep` behave differently on macOS and Linux
+- Fix incorrect variable-declaration order for handling `.bash_history` file
 
 ## [1.1.0] - 2020-08-19
 ### Added

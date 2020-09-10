@@ -11,6 +11,11 @@ if [ ! -e "${HISTDIR}" ] ; then
 fi
 export HISTDIR
 
+# @see https://twitter.com/michaelhoffman/status/639178277786136576
+HOSTNAME="$(hostname)"
+# Change e.g. `test.local` to `test`.
+HOSTNAME_SHORT="${HOSTNAME%%.*}"
+
 if [ -f "${HOME}/.bash_history" ] ; then
   mv -f "${HOME}/.bash_history" "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
 fi
@@ -19,10 +24,6 @@ timestamp_format="%FT%T%z"
 HISTTIMEFORMAT="[${timestamp_format}]%_*"
 export HISTTIMEFORMAT
 
-# @see https://twitter.com/michaelhoffman/status/639178277786136576
-HOSTNAME="$(hostname)"
-# Change e.g. `test.local` to `test`.
-HOSTNAME_SHORT="${HOSTNAME%%.*}"
 # @see https://twitter.com/michaelhoffman/status/639178145673932800
 # @note On OS X 10.11 beta, bash wouldn’t save history with the original
 #   `%Y/%m/%d` formatting, perhaps because the directory structure didn’t exist.
