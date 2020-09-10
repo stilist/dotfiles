@@ -21,10 +21,10 @@ export GREP_COLOR='1;33' # yellow
 DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 HISTDIR="${HISTDIR:-${DATA_HOME}/history}"
 
-script_pwd="$(dirname "${0}")"
+script_pwd="$(dirname -- "${0}")"
 support_path="${script_pwd}/../support"
 
-my_name="$(basename "${0}")"
+my_name="$(basename -- "${0}")"
 usage="$(cat <<EOM
 Search and filter shell command history. Use this together with \e[1msession/history.sh\e[0m.
 

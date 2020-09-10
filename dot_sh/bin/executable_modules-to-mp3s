@@ -100,7 +100,7 @@ get_module_name () {
   if [ -n "${module_name}" ] ; then
     echo "${module_name}"
   else
-    file_name="$(basename "${1}")"
+    file_name="$(basename -- "${1}")"
     echo "${file_name%.*}"
   fi
 }

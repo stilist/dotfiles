@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Put a colored emoji next to the hostname as a reminder of how dangerous a bad command on the host will be — these use a continuous color scale so they should be usable with colorblindness
 - Add `-r` flag ('reverse') to `histgrep`
 
+### Changed
+- Add `--` to all `basename` and `dirname` calls so directories with a leading `-` in the name aren’t parsed as arguments
+
 ### Fixed
 - Check Bash version using `awk` to handle systems that don’t have `bc` installed
 - Use `$HISTDIR` in `histgrep` command
