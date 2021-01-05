@@ -1,10 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -euo pipefail
 
-script_pwd="$(dirname -- "${0}")"
-# shellcheck source=./../support/colors.sh
-. "${script_pwd}/../support/colors.sh"
+support_path="$(dirname -- "${0}")/../support"
 
 fail_with_usage() {
   local usage
@@ -12,12 +10,17 @@ fail_with_usage() {
   local error
   error="${2:-}"
 
+  # shellcheck source=./support/colors.sh
+  . "${support_path}/colors.sh"
   if [ -n "${error}" ] ; then
     echo "${__COLOR_RED}ERROR:${__COLOR_RESET}" \
          "${error}" 1>&2
-    echo 1>&2
   fi
 
-  echo -e "${usage}" 1>&2
+  if [[ -n "${usage}" ]] ; then
+    echo 1>&2
+    echo -e "${usage}" 1>&2
+  fi
+
   exit 1
 }

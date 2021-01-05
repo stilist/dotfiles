@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - If session is connected via SSH the hostname will be followed by the name of the machine that made the connection
 - Put a colored emoji next to the hostname as a reminder of how dangerous a bad command on the host will be — these use a continuous color scale so they should be usable with colorblindness
 - Add `-r` flag ('reverse') to `histgrep`
+- Add `generate-ssh-key` command
 
 ### Changed
 - Add `--` to all `basename` and `dirname` calls so directories with a leading `-` in the name aren’t parsed as arguments

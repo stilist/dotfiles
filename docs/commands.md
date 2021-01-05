@@ -14,6 +14,10 @@ be rails server
 be rspec
 ```
 
+## `generate-ssh-key`
+
+[`git-current-ref`](../dot_sh/bin/executable_git-current-ref) makes it easy to generate a secure SSH key. The key must have a specified *purpose*, to discourage key reuse, and make it simpler to compromised keys in the future.
+
 ## `git-current-ref`
 
 [`git-current-ref`](../dot_sh/bin/executable_git-current-ref) gets the name of the `HEAD` of the current git repository. The [ref](https://git-scm.com/book/en/v2/Git-Internals-Git-References) may be a branch name, a commit hash, or a string that indicates the user is not in a useable ref.

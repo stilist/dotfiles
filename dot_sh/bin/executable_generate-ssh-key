@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$' \t\n'
+
+# @see https://blog.g3rt.nl/upgrade-your-ssh-keys.html#upgrade-your-current-rsa-key
+algorithm="ed25519"
+email_address=
+show_help=false
+
+default_email_address() {
+  local host
+  host="$(uname -n | sed "s/\.local//")"
+
+  echo "$(whoami)@${host}"
+}
+
+script_pwd="$(dirname -- "${0}")"
+script_name="$(basename -- "${0}")"
+usage() {
+  cat <<EOM
+Generate a secure SSH key for PURPOSE.
+
+Usage: ${script_name} PURPOSE
+
+Flags:
+\t-h\tPrint this help information
+\t-a\tChange algorithm (default ${algorithm})
+\t-e\tEmail address (default $(default_email_address))
+
+Example:
+\t${script_name} github
+\t${script_name} -a rsa example
+EOM
+}
+support_path="${script_pwd}/../support"
+# shellcheck source=./../fail_with_usage.sh
+. "${support_path}/fail_with_usage.sh"
+
+while getopts 'a:e:h' OPTION; do
+  case "${OPTION}" in
+    a)
+      algorithm="${OPTARG}"
+      ;;
+    e)
+      email_address="${OPTARG}"
+      ;;
+    h)
+      show_help=true
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [[ "${show_help}" == true ]]; then
+  fail_with_usage "$(usage)"
+fi
+
+email_address="${email_address:-$(default_email_address)}"
+
+shift $((OPTIND - 1))
+purpose="${1:-}"
+if [[ -z "${purpose}" ]]; then
+  fail_with_usage "$(usage)" "Provide a PURPOSE."
+fi
+
+key_name() {
+  local parts
+  parts=(
+    "id"
+    "${algorithm}"
+    "${purpose}"
+    "$(date +%F)"
+    "${email_address}"
+  )
+
+  # @see https://stackoverflow.com/questions/1527049/how-can-i-join-elements-of-an-array-in-bash#comment29545855_1527189
+  echo "${parts[@]}" | tr " " "_"
+}
+
+extra_options=""
+# @see https://blog.g3rt.nl/upgrade-your-ssh-keys.html#upgrade-your-current-rsa-key
+if [ "${algorithm}" = "rsa" ] ; then
+  extra_options=(
+    "-b"
+    "4096"
+  )
+fi
+
+name="$(key_name)"
+echo "Generating the key '${name}' (${algorithm} algorithm) for ${email_address}." 1>&2
+path="${HOME}/.ssh/${name}"
+
+# @see https://blog.g3rt.nl/upgrade-your-ssh-keys.html
+ssh-keygen \
+  -a 100 \
+  -C "${email_address}" \
+  -f "${path}" \
+  -o \
+  -t "${algorithm}" ${extra_options[@]} \
+  1>&2
+
+echo 1>&2
+echo "Your public key is:" 1>&2
+echo "# ${path}.pub"
+cat "${path}.pub"
+echo 1>&2
