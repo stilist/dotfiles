@@ -33,7 +33,7 @@ else
   __COLOR_YELLOW="\e[133m"
 fi
 
-echo "${__COLOR_RESET}"
+printf "%s" "${__COLOR_RESET}"
 
 export __COLOR_BOLD
 export __COLOR_RESET
