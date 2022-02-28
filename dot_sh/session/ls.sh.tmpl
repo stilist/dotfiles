@@ -4,9 +4,9 @@
 # G: colorized
 # l: long
 # p: slash after directories
-# T: full timestamp
+# D: custom timestamp format
 {{- if eq .chezmoi.os "darwin" }}
-alias lsl='ls -AGlpT'
+alias lsl='ls -AGlpT -D "%FT%T%z" --color=always'
 {{- else if eq .chezmoi.os "linux" }}
 alias lsl='ls --almost-all --color=always -l --indicator-style=slash --time-style="+%FT%T%z"'
 {{- end }}
