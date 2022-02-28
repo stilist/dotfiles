@@ -2,7 +2,7 @@
   {{- if (index . "git") }}
   email = "{{ .git.email }}"
   {{- else }}
-  email = "{{ .chezmoi.username }}@{{ .chezmoi.fullHostname }}"
+  email = "{{ .chezmoi.username }}@{{ .chezmoi.fqdnHostname }}"
   {{- end }}
   {{- if (index . "name") }}
   name = "{{ .name }}"

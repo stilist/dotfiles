@@ -1,0 +1,13 @@
+{{/* copied from https://github.com/chezmoi/dotfiles/blob/master/.chezmoi.toml.tmpl */}}
+
+{{- $codespaces:= env "CODESPACES" | not | not -}}
+sourceDir = {{ .chezmoi.sourceDir | quote }}
+
+[data]
+    name = "Jordan Cole"
+    codespaces = {{ $codespaces }}
+{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+    email = "dotfiles@ratafia.info"
+{{- else }}{{/* Interactive setup, so prompt for an email address */}}
+    email = {{ promptString "email" | quote }}
+{{- end }}
