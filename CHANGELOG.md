@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `-r` flag ('reverse') to `histgrep`
 - Add `generate-ssh-key` command
 - Add files in `$HOME/.kube/configs` to `$KUBECONFIG`
+- Run `pyenv init` with `.profile`
 
 ### Changed
 - Add `--` to all `basename` and `dirname` calls so directories with a leading `-` in the name aren’t parsed as arguments

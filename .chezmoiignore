@@ -3,3 +3,4 @@ LICENSE
 docs/
 /support/
 install.sh
+.shellcheckrc
