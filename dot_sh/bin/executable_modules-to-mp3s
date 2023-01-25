@@ -3,9 +3,9 @@
 ###
 # `modules-to-mp3s`
 #
-# Convert module files (.IT, .MOD, .S3M, .ZIP) into mp3s. Searches in the input
-# directory (defaults to the current directory) and produces mp3s in the output
-# directory (defaults to the input directory).
+# Convert module files (.IT, .MOD, .S3M, .STK, .ZIP) into mp3s. Searches in the
+# input directory (defaults to the current directory) and produces mp3s in the
+# output directory (defaults to the input directory).
 #
 # @example Convert files in the current directory
 #   modules-to-mp3s
@@ -174,7 +174,9 @@ find "${INPUT_PATH}" \
   \( \
     -name "*.it" \
     -o -name "*.mod" \
+    -o -name "MOD.*" \
     -o -name "*.s3m" \
+    -o -name "STK.*" \
     -o -name "*.zip" \
   \) \
   -exec bash -c 'convert_modules "$1"' _ {} \;
