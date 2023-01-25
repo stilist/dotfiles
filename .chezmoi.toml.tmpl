@@ -9,5 +9,9 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
     email = "dotfiles@ratafia.info"
 {{- else }}{{/* Interactive setup, so prompt for an email address */}}
-    email = {{ promptString "email" | quote }}
+    email = {{ promptString "email (general use)" | quote }}
 {{- end }}
+
+[data.git]
+    email = {{ promptString "email (git)" | quote }}
+    signingkey = {{ promptString "git GPG signing key" | quote }}
