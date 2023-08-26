@@ -9,20 +9,40 @@
   {{- else }}
   name = "{{ .chezmoi.username }}"
   {{- end }}
+
+  # ## Signing commits
+  #
+  # Run `chezmoi edit-config`. Find or add a `[data.git]` section and set a
+  # `signingkey` as described below.
+  #
+  # ### Signing commits with SSH
+  #
+  # `signingkey` is the absolute path of an SSH public key that is associated
+  # to your GitHub or GitLab account.
+  #
+  # ```
+  # [data.git]
+  #     # ...
+  #     signingkey = /Users/stilist/.ssh/id_ed25519
+  #     sign_with_ssh = true
+  # ```
+  #
+  # ### Signing commits with GPG
+  #
+  # `signingkey` is the public key of a GPG keypair.
+  #
   # Assuming you've already generated a GPG keypair, you can use this command
   # to get the public key for one of your active keypairs. Note that it will
   # choose this keypair arbitrarily.
   #
-  #   gpg --armor \
-  #       --export \
-  #       "$( \
-  #          gpg --list-secret-keys \
-  #              --keyid-format LONG \
-  #            | grep expires \
-  #            | grep '\[SC\]' \
-  #            | awk '{ print $2 }' \
-  #            | cut -d '/' -f 2 \
-  #       )"
+  #     gpg \
+  #       --list-secret-keys \
+  #       --keyid-format LONG \
+  #     | grep expires \
+  #     | grep '\[SC\]' \
+  #     | head -1 \
+  #     | awk '{ print $2 }' \
+  #     | cut -d '/' -f 2
   #
   # If you want to use a specific keypair, run
   #
@@ -34,8 +54,12 @@
   # `rsa4096/C731AB053A9CF1F3`. The public key is the hexadecimal string after
   # the `/`.
   #
-  #     gpg --armor --export C731AB053A9CF1F3
-  {{- if (index . "git") }}
+  # ```
+  # [data.git]
+  #     # ...
+  #     signingkey = "C731AB053A9CF1F3"
+  # ```
+  {{- if and (index . "git") .git.signingkey }}
   signingkey = "{{ .git.signingkey }}"
   {{- else }}
   # signingkey = ""
@@ -58,7 +82,11 @@
   untracked = cyan
 
 [commit]
+  {{- if and (index . "git") .git.signingkey }}
   gpgSign = true
+  {{- else }}
+  # gpgSign = true
+  {{- end }}
 
 [credential]
   {{- if eq .chezmoi.os "darwin" }}
@@ -75,6 +103,9 @@
   {{- if eq .chezmoi.os "darwin" }}
   program = /usr/local/MacGPG2/bin/gpg2
   {{- end }}
+  {{- if and (index . "git") (index .git "sign_with_ssh") }}
+  format = ssh
+  {{- end }}
 
 # @see https://gist.github.com/acfoltzer/4284d240f2787eb1826ec074e08234b5
 [init]
@@ -83,8 +114,6 @@
 [merge]
   # @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
   conflictstyle = diff3
-  # @see https://git-scm.com/docs/git-config#git-config-mergeff
-  ff = only
 
 [rerere]
   # @see https://git-scm.com/2010/03/08/rerere.html

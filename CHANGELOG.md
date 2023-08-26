@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Run `pyenv init` with `.profile`
 - Handle more module filenames
 - Ensure Homebrew is on `$PATH` on Apple Silicon Macs
+- Support signing git commits with SSH
 
 ### Changed
 - Add `--` to all `basename` and `dirname` calls so directories with a leading `-` in the name aren’t parsed as arguments
