@@ -17,7 +17,8 @@ HOSTNAME="$(hostname)"
 HOSTNAME_SHORT="${HOSTNAME%%.*}"
 
 if [ -f "${HOME}/.bash_history" ] ; then
-  mv -f "${HOME}/.bash_history" "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
+  cat "${HOME}/.bash_history" >> "${HISTDIR}/0000-00-00T00.00.00+0000_$(whoami)@${HOSTNAME_SHORT}"
+  rm -f "${HOME}/.bash_history"
 fi
 
 timestamp_format="%FT%T%z"
