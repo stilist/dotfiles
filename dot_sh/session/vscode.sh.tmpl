@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+{{- if eq .chezmoi.os "darwin" }}
 # @see https://code.visualstudio.com/docs/setup/mac#_alternative-manual-instructions
 PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+{{- end }}
