@@ -1,11 +1,3 @@
-# Ruby gems
-if command -v gem >/dev/null 2>&1 ; then
-  # The paths `gem environment gempath` returns don't include `/bin`, which
-  # is where the binaries are -- what matters for `PATH`.
-  gempaths="$(gem environment gempath | sed -e "s/:/\/bin:/g")"
-  PATH="$PATH:$gempaths/bin"
-fi
-
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
@@ -13,3 +5,8 @@ alias mv='mv -i'
 if [ -f /etc/bashrc ] ; then
   . /etc/bashrc
 fi
+
+for file in "${HOME}/.sh/rc/"*.sh ; do
+  [ -r "$file" ] && [ -f "$file" ] && . "$file"
+done
+unset file
