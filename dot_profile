@@ -1,23 +1,23 @@
 if command -v nano > /dev/null 2>&1 ; then
-  EDITOR=nano
+  EDITOR="nano"
 else
-  EDITOR=vi
+  EDITOR="vi"
 fi
 export EDITOR
 
 export GIT_MERGE_AUTOEDIT=no
 
 # Load `$PATH`s.
-if [ -f "$HOME/.rc" ] ; then
-  . "$HOME/.rc"
+if [ -f "${HOME}/.rc" ] ; then
+  . "${HOME}/.rc"
 fi
-PATH="$HOME/.sh/bin:$PATH:${HOME}/bin"
+PATH="${HOME}/.sh/bin:${PATH}:${HOME}/bin"
 
-if [ -f "$HOME/.prompt" ] ; then
-  . "$HOME/.prompt"
+if [ -f "${HOME}/.prompt" ] ; then
+  . "${HOME}/.prompt"
 fi
 
-for file in $HOME/.sh/session/*.sh ; do
-  [ -r "$file" ] && [ -f "$file" ] && . "$file";
-done;
-unset file;
+for file in "${HOME}/.sh/session"/*.sh ; do
+  [ -r "${file}" ] && [ -f "${file}" ] && . "${file}"
+done
+unset file

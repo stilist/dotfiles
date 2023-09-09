@@ -6,7 +6,7 @@ if [ -f /etc/bashrc ] ; then
   . /etc/bashrc
 fi
 
-for file in "${HOME}/.sh/rc/"*.sh ; do
-  [ -r "$file" ] && [ -f "$file" ] && . "$file"
+for file in "${HOME}/.sh/rc"/*.sh ; do
+  [ -r "${file}" ] && [ -f "${file}" ] && . "${file}"
 done
 unset file
