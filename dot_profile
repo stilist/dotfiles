@@ -5,6 +5,10 @@ else
 fi
 export EDITOR
 
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
 export GIT_MERGE_AUTOEDIT=no
 
 # Load `$PATH`s.
