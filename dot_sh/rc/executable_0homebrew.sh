@@ -5,6 +5,8 @@
 #
 # @note On Intel Macs (`x86_64`) Homebrew is installed to `/usr/local/bin`,
 #   which is part of the default `$PATH`.
+# @note This is named `0homebrew` so `brew` is added to `$PATH` before `asdf.sh`
+#   runs.
 # @see https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 if [[ "$(/usr/bin/uname -m)" == "arm64" ]] ; then
   # Insert at *start* of `$PATH` so Homebrew-managed software takes precedence
