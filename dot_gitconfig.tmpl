@@ -113,7 +113,9 @@
 
 [merge]
   # @see https://git-scm.com/docs/git-config#git-config-mergeconflictStyle
-  conflictstyle = diff3
+  conflictstyle = zdiff3
+[diff]
+  algorithm = histogram
 
 [rerere]
   # @see https://git-scm.com/2010/03/08/rerere.html
