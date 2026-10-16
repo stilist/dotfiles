@@ -1,6 +1,6 @@
 *.md
 LICENSE
 docs/
-/support/
+support/
 install.sh
 .shellcheckrc
